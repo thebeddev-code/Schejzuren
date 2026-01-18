@@ -45,8 +45,8 @@ export function ClockHandle({
   controlled = true
 }: Props) {
   const [handleDegrees, setHandleDegrees] = createSignal({
+    mouse: value().totalAngle % 360,
     total: value().totalAngle,
-    mouse: value().totalAngle % 360
   })
   const [mouseDown, setMouseDown] = createSignal(followMouse);
   const [mouseEnter, setMouseEnter] = createSignal(followMouse);
@@ -167,7 +167,7 @@ export function ClockHandle({
             height: `${HANDLE_BUTTON_SIZE_PX}px`,
           }}
           class={cn(
-            "absolute flex justify-center items-center bg-slate-800/20 rounded-full  -left-[11px]",
+            "absolute flex justify-center items-center bg-slate-800/20 rounded-full  -left-2.75",
             {
               "cursor-grab": variant === "full",
             },

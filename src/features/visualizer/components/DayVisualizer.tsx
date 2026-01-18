@@ -145,7 +145,6 @@ export function DayVisualizer({
     lastClickTimeRef = currentClickTime;
   }
 
-  const shouldTrackNewTodo = typeof createTodoDegrees().start === "number";
   const clock = (
     <>
       <Clock canvasRef={canvasRef} />
@@ -219,14 +218,14 @@ export function DayVisualizer({
                   start,
                   end: total,
                 }));
+                console.log(total)
               }}
-              followMouse={shouldTrackNewTodo}
+              followMouse={true}
               variant="minimal"
               controlled={false}
             >
               <Clock canvasRef={canvasRef} />
             </ClockHandle>
-
           </Show>
           <Show when={typeof createTodoDegrees().start !== "number"}>
             <Clock canvasRef={canvasRef} />
