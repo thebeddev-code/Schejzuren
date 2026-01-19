@@ -1,6 +1,6 @@
 import { addHours, formatDate, set } from "date-fns";
 import { DEGREES_PER_HOUR } from "../utils/constants";
-import { Todo } from "~/lib/types/api";
+import { Todo } from "~/lib/types";
 
 import { calcClosestDistToClockHandle } from "../utils/distToClockHandle";
 import { drawTodos, todosToDrawables } from "../utils/drawTodos";

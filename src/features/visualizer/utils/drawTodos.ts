@@ -1,7 +1,7 @@
 import { differenceInCalendarDays } from "date-fns";
 
 import type { DrawableTodo } from "./types.d.ts"
-import type { Todo } from "~/lib/types/api.js";
+import type { Todo } from "~/lib/types";
 import { calcDegreesFrom, calcRadiansFrom } from "./math";
 
 export function todosToDrawables({
