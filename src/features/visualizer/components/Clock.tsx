@@ -31,7 +31,9 @@ export function Clock(props: Props) {
           <div
             class="absolute flex h-8 w-8 items-center justify-center"
             style={{
-              transform: `rotate(${i * 30 + oneHourOffset}deg) translateY(-150px)`,
+              transform: `rotate(${
+                i * 30 + oneHourOffset
+              }deg) translateY(-150px)`,
             }}
           >
             <div
