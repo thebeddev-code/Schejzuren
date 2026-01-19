@@ -14,7 +14,7 @@ import { ColorWheel } from "./ColorWheel";
 import { ClockHandle } from "./ClockHandle";
 import { degreesToDate } from "../utils/date";
 import { Sunrise, Sun, Sunset, Moon, ChevronUp } from "lucide-solid";
-import { createEffect, createMemo, createSignal, Show } from "solid-js";
+import { Accessor, createEffect, createMemo, createSignal, Show } from "solid-js";
 import { ClickEvent } from "~/lib/types";
 
 const RADIUS = 170;
@@ -27,7 +27,7 @@ interface Props {
   todos: Todo[];
   onFormOpen?: (data: Pick<Todo, "startsAt" | "due" | "color">) => void;
   onMoveDate?: (days: number) => void;
-  currentDate?: Date;
+  currentDate?: Accessor<Date>;
 }
 
 export function DayVisualizer({
@@ -36,7 +36,7 @@ export function DayVisualizer({
   onMoveDate,
   currentDate,
 }: Props) {
-  const currentTimeInDegrees = getCurrentTimeInDegrees(currentDate);
+  const currentTimeInDegrees = getCurrentTimeInDegrees(currentDate?.());
   let canvasRef!: HTMLCanvasElement;
   let lastClickTimeRef: number = 0;
   const [clockHandleDegrees, setClockHandleDegrees] = createSignal({
@@ -96,17 +96,18 @@ export function DayVisualizer({
 
   function handleMoveDateClick(days: number) {
     const isMoveForward = days > 0;
+    const offset = DEGREES_PER_HOUR / 60 * 5; // 5 min offset
     if (isMoveForward) {
       setClockHandleDegrees({
-        currentAngle: 0,
-        totalAngle: 0,
+        currentAngle: offset,
+        totalAngle: offset,
       });
       onMoveDate?.(1);
     }
     if (!isMoveForward) {
       setClockHandleDegrees({
-        currentAngle: MAX_TOTAL_DEGREES % 360,
-        totalAngle: MAX_TOTAL_DEGREES,
+        currentAngle: MAX_TOTAL_DEGREES % 360 - offset,
+        totalAngle: MAX_TOTAL_DEGREES - offset,
       });
       onMoveDate?.(-1);
     }
@@ -168,7 +169,7 @@ export function DayVisualizer({
             <ChevronUp class="-rotate-90" size={16} />
           </button>
           <div class="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground select-none">
-            {formatDate(currentDate ?? new Date(), "PP")}
+            {formatDate(currentDate?.() ?? new Date(), "PP")}
           </div>
           <button
             onClick={() => handleMoveDateClick(1)}

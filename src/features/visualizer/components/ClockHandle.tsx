@@ -50,7 +50,6 @@ export function ClockHandle({
   })
   const [mouseDown, setMouseDown] = createSignal(followMouse);
   const [mouseEnter, setMouseEnter] = createSignal(followMouse);
-  const [hasUsedQuickSwitch, setHasUsedQuickSwitch] = createSignal(false);
   const { currentAngle, totalAngle } = value();
   const t = controlled ? totalAngle : handleDegrees().total;
   const time = formatDate(
@@ -88,8 +87,16 @@ export function ClockHandle({
       })
     }
     onChange?.(delta, newTotal);
-  };
-
+  }
+    ;
+  let hasUsedQuickSwitch = false;
+  createEffect(() => {
+    const intervalId = setInterval(() => {
+      if (mouseDown() || hasUsedQuickSwitch) return;
+      onChange(DEGREES_PER_HOUR / 3600);
+    }, 1000);
+    return () => clearInterval(intervalId);
+  });
   function handleQuickTimeSwitchClick({
     index = 1,
     event,
@@ -108,7 +115,7 @@ export function ClockHandle({
       });
       // Resetting the last raw angle, very important
       lastRawAngle = null;
-      setHasUsedQuickSwitch(false);
+      hasUsedQuickSwitch = false;
       return;
     }
     // So, we know that conversion rate of degrees to hours is 30 degrees because {360 / 12 = 30}
@@ -122,16 +129,8 @@ export function ClockHandle({
     });
 
     // Do not increase the clock handle angle with time passage
-    setHasUsedQuickSwitch(true);
+    hasUsedQuickSwitch = true;
   }
-
-  createEffect(() => {
-    const intervalId = setInterval(() => {
-      if (mouseDown() || hasUsedQuickSwitch()) return;
-      onChange(DEGREES_PER_HOUR / 3600);
-    }, 1000);
-    return () => clearInterval(intervalId);
-  });
 
   const displayAngle = () => controlled ? value().currentAngle : handleDegrees().total;
   const clockHandleStyles = createMemo(() => ({

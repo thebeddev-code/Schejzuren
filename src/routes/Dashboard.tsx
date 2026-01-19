@@ -23,7 +23,7 @@ export default function Dashboard() {
       <Show when={todos()}>
         <DayVisualizer
           todos={todos() as Todo[]}
-          currentDate={currentDate()}
+          currentDate={currentDate}
           onMoveDate={(days) => {
             let date = set(currentDate(), {
               hours: 0,
