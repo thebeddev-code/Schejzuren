@@ -1,25 +1,8 @@
-import createRouteMatcher from '@tscircuit/routematch'
 import { db } from './server/db';
+import { Options, } from './server/router';
 import { isTauri } from '@tauri-apps/api/core';
-
+import { handleRequest } from './server/router';
 // TODO: A better type maybe?
-type Options = Record<string, unknown>
-
-const routeMatcher = createRouteMatcher([
-  "/todos/[id]",
-  "/todos",
-])
-
-function handleDesktopClientRequest(method: string, route: string, options?: Options) {
-  const result = routeMatcher(route);
-  switch (result?.matchedRoute) {
-    case "/todos": {
-      if (method === "GET") {
-        return db.select("SELECT * FROM todos")
-      }
-    }
-  }
-}
 
 class ApiClient {
   private baseUrl = "http://localhost:5000/api/v1/";
@@ -32,7 +15,7 @@ class ApiClient {
   ): Promise<T> {
 
     if (isTauri()) {
-      return handleDesktopClientRequest(method, route, options) as T;
+      return handleRequest(method, route, options) as T;
     }
     // TODO: implement web client logic
     // throw new Error("Not yet implemented!")
