@@ -1,13 +1,17 @@
-import { createEffect, createSignal, For, Show } from 'solid-js';
-import { CreateTodoPayload } from '~/lib/schemas/todo.schema';
-import { createStore } from 'solid-js/store';
+import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
+import { CreateTodoPayload } from "~/lib/schemas/todo.schema";
+import { createStore } from "solid-js/store";
 import { TextField } from "@kobalte/core/text-field";
 import { Checkbox } from "@kobalte/core/checkbox";
 import { Select } from "@kobalte/core/select";
 import { Separator } from "@kobalte/core/separator";
 import { ColorSwatch } from "@kobalte/core/color-swatch";
 import { ColorWheel } from "@kobalte/core/color-wheel";
-import { format, set } from 'date-fns';
+import { format, set } from "date-fns";
+import { TagsField } from "~/lib/components/ui/form/tags-field";
+import { Todo } from "~/lib/types";
+import { DEFAULT_TAGS } from "../lib/constants";
+
 export function TodoForm() {
   const [formData, setFormData] = createStore<CreateTodoPayload>({
     title: "",
@@ -22,19 +26,22 @@ export function TodoForm() {
     due: new Date().toISOString(),
     startsAt: new Date().toString(),
     recurrenceRule: "",
-  })
+  });
 
-  const [formErrors, setFormErrors] = createStore()
+  const [formErrors, setFormErrors] = createStore<Partial<Todo>>();
   function handleSubmit(e: SubmitEvent) {
-    e.preventDefault()
-    console.log(formData)
+    e.preventDefault();
+    console.log(formData);
   }
   type ValueType<Key extends keyof CreateTodoPayload> = CreateTodoPayload[Key];
-  function createFieldChangeHandler<Key extends keyof CreateTodoPayload>(fieldName: keyof CreateTodoPayload,) {
-    return (value: CreateTodoPayload[Key]) => setFormData((data) => ({
-      ...data,
-      [fieldName]: value
-    }))
+  function createFieldChangeHandler<Key extends keyof CreateTodoPayload>(
+    fieldName: keyof CreateTodoPayload,
+  ) {
+    return (value: CreateTodoPayload[Key]) =>
+      setFormData((data) => ({
+        ...data,
+        [fieldName]: value,
+      }));
   }
   function createTimeFieldChangeHandler(fieldName: "startsAt" | "due") {
     return (t: string) => {
@@ -45,27 +52,35 @@ export function TodoForm() {
         [fieldName]: set(data.startsAt as string, {
           hours: Number.parseInt(h) as number,
           minutes: Number.parseFloat(m) as number,
-        })
-      }))
-    }
+        }),
+      }));
+    };
   }
   createEffect(() => {
-    console.log(format(formData.startsAt as string, "hh:mm"))
-  })
+    console.log(formData.tags);
+  });
   return (
     <form
       onSubmit={handleSubmit}
-      class="flex flex-col gap-6 bg-white p-8 rounded-xl shadow-sm border border-slate-200 max-w-2xl mx-auto"
+      class="flex flex-col gap-6 bg-white p-8 rounded-xl shadow-sm border border-slate-200 w-1/2 mx-auto"
     >
       <header>
         <h2 class="text-xl font-bold text-slate-800">Create New Task</h2>
-        <p class="text-sm text-slate-500">Fill out the details below to organize your todo.</p>
+        <p class="text-sm text-slate-500">
+          Fill out the details below to organize your todo.
+        </p>
       </header>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Title - Full Width */}
-        <TextField class="flex flex-col gap-1 md:col-span-2" value={formData.title} onChange={createFieldChangeHandler("title")}>
-          <TextField.Label class="text-sm font-medium text-slate-700">Title</TextField.Label>
+        <TextField
+          class="flex flex-col gap-1 md:col-span-2"
+          value={formData.title}
+          onChange={createFieldChangeHandler("title")}
+        >
+          <TextField.Label class="text-sm font-medium text-slate-700">
+            Title
+          </TextField.Label>
           <TextField.Input
             placeholder="What needs to be done?"
             class="px-3 py-2 rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
@@ -73,8 +88,14 @@ export function TodoForm() {
         </TextField>
 
         {/* Description - Full Width */}
-        <TextField class="flex flex-col gap-1 md:col-span-2" value={formData.description} onChange={createFieldChangeHandler("description")}>
-          <TextField.Label class="text-sm font-medium text-slate-700">Description</TextField.Label>
+        <TextField
+          class="flex flex-col gap-1 md:col-span-2"
+          value={formData.description}
+          onChange={createFieldChangeHandler("description")}
+        >
+          <TextField.Label class="text-sm font-medium text-slate-700">
+            Description
+          </TextField.Label>
           <TextField.TextArea
             placeholder="Add some details..."
             class="px-3 py-2 rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[100px]"
@@ -83,11 +104,15 @@ export function TodoForm() {
       </div>
 
       <div class="grid grid-cols-2 gap-4">
-
         {/* Start Date */}
-        <TextField class=" flex flex-col gap-1" value={format(formData.startsAt as string, "HH:mm", {
-        })} onChange={createTimeFieldChangeHandler("startsAt")}>
-          <TextField.Label class="text-sm font-medium text-slate-700">Starts At</TextField.Label>
+        <TextField
+          class=" flex flex-col gap-1"
+          value={format(formData.startsAt as string, "HH:mm", {})}
+          onChange={createTimeFieldChangeHandler("startsAt")}
+        >
+          <TextField.Label class="text-sm font-medium text-slate-700">
+            Starts At
+          </TextField.Label>
           <TextField.Input
             type="time"
             class="px-3 py-2 rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -95,27 +120,33 @@ export function TodoForm() {
         </TextField>
 
         {/* Due Date */}
-        <TextField class="flex flex-col gap-1" value={format(formData.due as string, "HH:mm", {
-        })} onChange={createTimeFieldChangeHandler("due")}>
-          <TextField.Label class="text-sm font-medium text-slate-700">Starts At</TextField.Label>
+        <TextField
+          class="flex flex-col gap-1"
+          value={format(formData.due as string, "HH:mm", {})}
+          onChange={createTimeFieldChangeHandler("due")}
+        >
+          <TextField.Label class="text-sm font-medium text-slate-700">
+            Starts At
+          </TextField.Label>
           <TextField.Input
             type="time"
             class="px-3 py-2 rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </TextField>
-
-
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4" >
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Priority Select */}
         <Select
           options={["low", "medium", "high"]}
           value={formData.priority}
           onChange={createFieldChangeHandler("priority")}
           placeholder="Select priority"
-          itemComponent={props => (
-            <Select.Item item={props.item} class="flex items-center justify-between px-3 py-2 text-sm text-slate-700 cursor-pointer rounded-md outline-none focus:bg-indigo-50 focus:text-indigo-700">
+          itemComponent={(props) => (
+            <Select.Item
+              item={props.item}
+              class="flex items-center justify-between px-3 py-2 text-sm text-slate-700 cursor-pointer rounded-md outline-none focus:bg-indigo-50 focus:text-indigo-700"
+            >
               <Select.ItemLabel>{props.item.rawValue}</Select.ItemLabel>
               <Select.ItemIndicator>
                 <span class="text-indigo-600">✓</span>
@@ -123,9 +154,16 @@ export function TodoForm() {
             </Select.Item>
           )}
         >
-          <Select.Label class="z-50 relative text-sm font-semibold text-slate-700 mb-1.5 block">Priority</Select.Label>
-          <Select.Trigger aria-label="Priority" class="flex items-center justify-between w-full px-3 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
-            <Select.Value<string>>{state => state.selectedOption()}</Select.Value>
+          <Select.Label class="z-50 relative text-sm font-semibold text-slate-700 mb-1.5 block">
+            Priority
+          </Select.Label>
+          <Select.Trigger
+            aria-label="Priority"
+            class="flex items-center justify-between w-full px-3 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+          >
+            <Select.Value<string>>
+              {(state) => state.selectedOption()}
+            </Select.Value>
             <Select.Icon class="text-slate-400 text-xs">▼</Select.Icon>
           </Select.Trigger>
           <Select.Portal>
@@ -135,15 +173,17 @@ export function TodoForm() {
           </Select.Portal>
         </Select>
 
-
         {/* Status Select */}
         <Show when={false}>
           <Select
             options={["pending", "in-progress", "completed"]}
             value={formData.status}
             placeholder="Select status"
-            itemComponent={props => (
-              <Select.Item item={props.item} class="flex items-center justify-between px-3 py-2 text-sm text-slate-700 cursor-pointer rounded-md outline-none focus:bg-indigo-50 focus:text-indigo-700">
+            itemComponent={(props) => (
+              <Select.Item
+                item={props.item}
+                class="flex items-center justify-between px-3 py-2 text-sm text-slate-700 cursor-pointer rounded-md outline-none focus:bg-indigo-50 focus:text-indigo-700"
+              >
                 <Select.ItemLabel>{props.item.rawValue}</Select.ItemLabel>
                 <Select.ItemIndicator>
                   <span class="text-indigo-600">✓</span>
@@ -151,7 +191,9 @@ export function TodoForm() {
               </Select.Item>
             )}
           >
-            <Select.Label class="text-sm font-semibold text-slate-700 mb-1.5 block">Status</Select.Label>
+            <Select.Label class="text-sm font-semibold text-slate-700 mb-1.5 block">
+              Status
+            </Select.Label>
             <Select.Trigger class="flex items-center justify-between w-full px-3 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
               <Select.Value class="text-sm">
                 {/* {state => state.selectedOption()} */}
@@ -167,42 +209,25 @@ export function TodoForm() {
         </Show>
 
         <Separator class="md:col-span-2 h-px bg-slate-200 my-2" />
-
-        {/* Recurring Toggle */}
-        <Checkbox class="flex items-center gap-2 md:col-span-2" checked={formData.isRecurring}>
-          <Checkbox.Input class="w-4 h-4 rounded border-slate-300" />
-          <Checkbox.Label class="text-sm font-medium text-slate-700 cursor-pointer">
-            This is a recurring task
-          </Checkbox.Label>
-        </Checkbox>
-
-        {/* Recurrence Rule (Conditional-style) */}
-        <TextField class="flex flex-col gap-1 md:col-span-2" value={formData.recurrenceRule}>
-          <TextField.Label class="text-sm font-medium text-slate-700">Recurrence Rule (RRULE)</TextField.Label>
-          <TextField.Input
-            placeholder="FREQ=WEEKLY;BYDAY=MO,WE,FR"
-            class="px-3 py-2 rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </TextField>
-
         {/* Color Picker (Using TextField input type color) */}
         <TextField class="flex flex-col gap-1">
-          <TextField.Label class="text-sm font-medium text-slate-700">Category Color</TextField.Label>
+          <TextField.Label class="text-sm font-medium text-slate-700">
+            Category Color
+          </TextField.Label>
           <TextField.Input
             type="color"
             class="h-10 w-full rounded-md border border-slate-300 bg-transparent p-1 cursor-pointer"
           />
         </TextField>
-
-        {/* Tags */}
-        <TextField class="flex flex-col gap-1">
-          <TextField.Label class="text-sm font-medium text-slate-700">Tags (comma separated)</TextField.Label>
-          <TextField.Input
-            placeholder="work, urgent, health"
-            class="px-3 py-2 rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </TextField>
       </div>
+      {/* Tags */}
+      <TagsField
+        value={formData.tags}
+        onChange={createFieldChangeHandler("tags")}
+        label="Tags"
+        suggestions={DEFAULT_TAGS}
+        error={createMemo(() => formErrors.tags?.[0] ?? "")()}
+      />
 
       <button
         type="submit"
@@ -210,5 +235,6 @@ export function TodoForm() {
       >
         Create Task
       </button>
-    </form >)
+    </form>
+  );
 }
