@@ -10,6 +10,9 @@
 
 <h1 align="center">Todo clock</h1>
 <p align="center">A To-Do app that makes todos management feel natural. </p>
+<div align="center">
+    <img src="https://github.com/thebeddev-code/todo-clock/blob/main/public/appbanner.png" />  
+</div>
 <p align="center">
   <br />
   <br />
