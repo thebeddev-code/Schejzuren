@@ -1,8 +1,7 @@
-import { db } from './server/db';
-import { Options, } from './server/router';
+import { db } from './backend/db';
+import { Options, } from './backend/router';
 import { isTauri } from '@tauri-apps/api/core';
-import { handleRequest } from './server/router';
-// TODO: A better type maybe?
+import { handleRequest } from './backend/router';
 
 class ApiClient {
   private baseUrl = "http://localhost:5000/api/v1/";
