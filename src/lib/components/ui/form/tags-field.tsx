@@ -3,25 +3,28 @@ import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
 import { cn } from "~/lib/utils/cn";
 import { Plus, X } from "lucide-solid";
 import { Button } from "@kobalte/core/button";
+import { FocusOutsideEvent } from "@kobalte/core/src/index.jsx";
+import { BlurEvent } from "~/lib/types";
 
 /*
  * DONE: Improve visual styles e.g the clear button
  * DONE: Display autocompletion hint on the input
  * DONE: Display a hint after user has tried to enter a duplicate tag
- * TODO: Do a proper render of error message
- *
- * */
+ * DONE: Do a proper render of error messages
+* */
 
 interface Props {
+  name?: string;
   value: string[];
-  onChange: (newTags: string[]) => void;
   error?: string;
   maxTags?: number;
   maxTagLength?: number;
   suggestions?: string[];
   label?: string;
+  onChange: (newTags: string[]) => void;
+  onBlur: (e: BlurEvent) => void
 }
-
+// NOTE: I mean it's not the best but it kinda works..
 export function TagsField(props: Props) {
   const { maxTags = 20, maxTagLength = 255 } = props;
   // Used to hide suggestions and
@@ -129,11 +132,12 @@ export function TagsField(props: Props) {
 
   return (
     <TextField
+      name={props.name}
       value={inputValue()}
       onChange={setInputValue}
       onKeyDown={handleKeyDown}
       class={cn(
-        "relative min-h-10 p-2 rounded-md flex flex-wrap gap-2 items-center",
+        "relative min-h-10 p-2 rounded-md",
         "bg-background border border-border hover:border-primary/50 transition-colors",
         "text-gray-800",
       )}
@@ -144,12 +148,14 @@ export function TagsField(props: Props) {
       <div class="flex flex-wrap gap-2">
         <For each={props.value}>
           {(tag, i) => (
-            <span class={
+            <div class={
               cn("select-none flex items-center gap-1 px-2 py-1 rounded-md bg-primary/10 text-primary",
-                " border border-primary/20 text-sm", {
-                "border border-red-400": duplicateTagIndex() === i(),
-              })} >
-              {tag}
+                " border border-primary/20 text-sm",
+                {
+                  "border border-red-400": duplicateTagIndex() === i(),
+                })} >
+              {/* FIXME: Doesn't account for screen width */}
+              {tag.slice(0, 50)}{tag.length > 50 ? "..." : ""}
               <button
                 onClick={createRemoveTagClickHandler(i())}
                 class="ml-1 w-4 h-4 flex items-center justify-center rounded-full hover:bg-black/20"
@@ -157,16 +163,18 @@ export function TagsField(props: Props) {
               >
                 <X class="w-3 h-3" />
               </button>
-            </span>
+            </div>
           )}
         </For>
       </div>
 
-      <div class="flex-1 flex gap-2 items-center">
+      <div class={cn("flex-1 flex gap-2 items-center", {
+        "mt-4": props.value.length > 0
+      })}>
         {/* Input container */}
-        <div class="flex-1 relative flex overflow-y-scroll">
+        <div class="flex-1 relative flex overflow-y-scroll items-center">
           {/* Auto complete hint  */}
-          {/* TODO: Autocomplete sucks */}
+          {/* FIXME: Autocomplete hint sucks */}
           <Show when={!hideSuggestions()}>
             <span class="absolute px-2 p-1 text-gray-300 text-sm select-none">
               {suggestions()[0] ?? ""}
@@ -177,7 +185,10 @@ export function TagsField(props: Props) {
             aria-label="Todo tags"
             placeholder="Add tag..."
             class="relative z-10 flex-1 px-2 py-1 rounded bg-transparent border-none focus:outline-none focus:ring-0 text-sm"
+            onBlur={props.onBlur}
+            maxLength={maxTagLength}
           />
+          <span class="text-xs text-gray-500">{inputValue().length}/{maxTagLength}</span>
         </div>
 
         {/* Buttons */}
@@ -193,9 +204,9 @@ export function TagsField(props: Props) {
         >
           Clear
         </Button>
-        <TextField.ErrorMessage>{props.error}</TextField.ErrorMessage>
       </div>
-
+      {/* Error message */}
+      <TextField.ErrorMessage class="text-red-500 text-sm p-2">{props.error}</TextField.ErrorMessage>
       {/* Suggestions */}
       <Show when={suggestions().length > 0 && !hideSuggestions()}>
         <div class="absolute top-full left-0 mt-1 w-full min-w-30 max-h-60 overflow-y-auto bg-white rounded-md shadow-lg border border-gray-200 z-50">
@@ -217,6 +228,8 @@ export function TagsField(props: Props) {
           </For>
         </div>{" "}
       </Show>
+
+      <div class="absolute -bottom-6 right-2 text-xs">{props.value.length}/{maxTags}</div>
     </TextField>
   );
 }
