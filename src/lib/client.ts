@@ -1,7 +1,6 @@
-import { db } from './backend/db';
 import { Options, } from './backend/router';
 import { isTauri } from '@tauri-apps/api/core';
-import { handleRequest } from './backend/router';
+import * as backend from './backend/router';
 
 class ApiClient {
   private baseUrl = "http://localhost:5000/api/v1/";
@@ -14,7 +13,7 @@ class ApiClient {
   ): Promise<T> {
 
     if (isTauri()) {
-      return handleRequest(method, route, options) as T;
+      return backend.handleRequest(method, route, options) as T;
     }
     // TODO: implement web client logic
     // throw new Error("Not yet implemented!")
