@@ -5,6 +5,7 @@ import { Todo } from "~/lib/types";
 import { TodoExpandedView } from "./TodoExpandedView";
 import { TodoItem } from "./TodoItem";
 import { Accessor, createMemo, createSignal, For, Show } from "solid-js";
+import { setTodoFormStore } from "./todoFormStore";
 
 export function TodoList({ todos }: { todos: Accessor<Todo[]> }) {
   // const changeFormType = useTodoForm((state) => state.changeFormType);
@@ -39,10 +40,13 @@ export function TodoList({ todos }: { todos: Accessor<Todo[]> }) {
 
       <div class="flex justify-center">
 
-        {/* onClick={() => changeFormType("create")} */}
         <Button
           variant="secondary"
           class="w-30 border hover:border-blue-500"
+          onClick={() => setTodoFormStore((s) => ({
+            ...s,
+            formType: "create"
+          }))}
         >
           <Plus class="text-slate-800" />
         </Button>
