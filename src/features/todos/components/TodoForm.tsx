@@ -12,6 +12,7 @@ import { Color, parseColor } from "@kobalte/core/colors";
 import { ColorSlider } from "@kobalte/core/color-slider";
 import { trackDeep, trackStore } from "@solid-primitives/deep";
 import { trimAndLowercase } from "~/lib/utils/strings";
+import { createTodo } from "../api/createTodo";
 
 
 /*
@@ -131,20 +132,26 @@ export function TodoForm() {
     const formErrorMessages: Record<string, string> = {}
     // Only process fields that have been touched
     const fields = Object.keys(formTouched);
-    console.log(fields)
     for (const f of fields) {
       const { message = null } = error?.issues.find(issue => {
         return issue.path.includes(f)
       }) ?? {};
       formErrorMessages[f] = message ?? "";
     }
-    console.log(error, formErrorMessages)
     setFormErrors(formErrorMessages)
   })
 
   function handleSubmit(e: SubmitEvent) {
-    e.preventDefault();
-    console.log(unwrap(formData))
+    e.preventDefault()
+    const data = unwrap(formData);
+    data.color = data.color.toString("hex") as unknown as Color;
+    const { success, error } = todoPayloadSchema.safeParse(data)
+    console.log(error)
+
+    if (success)
+      createTodo({
+        body: data
+      })
   }
 
   return (
@@ -152,6 +159,7 @@ export function TodoForm() {
       autocomplete="off"
       onSubmit={handleSubmit}
       class="flex flex-col gap-6 bg-white p-8 rounded-xl shadow-sm border border-slate-200 w-1/2 mx-auto"
+      onClick={(e) => e.stopPropagation()}
     >
       <header>
         <h2 class="text-xl font-bold text-slate-800">Create New Task</h2>
