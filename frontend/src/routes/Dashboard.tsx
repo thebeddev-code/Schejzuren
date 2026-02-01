@@ -9,7 +9,7 @@ import { createAsync } from "@solidjs/router";
 import { getTodos } from "~/features/todos/api/getTodos";
 import { TodoList } from "~/features/todos/components/TodoList";
 import { TodoForm } from "~/features/todos/components/TodoForm";
-import { TodoFormWrapper } from "~/features/todos/components/TodoFormWrapper";
+import { TodoFormDrawer } from "~/features/todos/components/TodoFormDrawer";
 import { setTodoFormStore } from "~/features/todos/components/todoFormStore";
 
 export default function Dashboard() {
