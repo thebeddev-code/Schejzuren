@@ -2,7 +2,7 @@ import { format } from "date-fns";
 import { X as Close, SquarePen } from "lucide-solid";
 import { Button } from "~/lib/components/ui/button";
 import { ClickEvent, Todo } from "~/lib/types";
-import { deleteTodoMutation } from "../api/deleteTodo";
+import { deleteTodoMutation } from "../api/deleteTodoMutation";
 
 type Props = {
   todo: Todo;
@@ -58,7 +58,6 @@ export function TodoItem({ todo, onShowExpandedView }: Props) {
           opacity: "0.2",
         }}
       />
-
       <div
         class="relative z-10 flex items-center justify-between gap-3 bg-transparent px-3 py-2 text-sm"
         onClick={() => onShowExpandedView?.(todo.id)}
