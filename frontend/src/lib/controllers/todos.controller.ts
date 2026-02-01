@@ -1,8 +1,7 @@
-import { CreateTodo, GetTodos } from "../../../wailsjs/go/services/TodoService";
-import { services } from "../../../wailsjs/go/models.ts";
+import { CreateTodo, GetTodos } from "~/go/services/TodoService";
 import { Todo } from "../types/index";
 
-export async function createTodo({ body }: { body: services.Todo }) {
+export async function createTodo({ body }: { body: Todo }) {
   console.log(body)
   console.log(await CreateTodo(body))
 }
