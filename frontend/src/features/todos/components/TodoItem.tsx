@@ -2,6 +2,7 @@ import { format } from "date-fns";
 import { X as Close, SquarePen } from "lucide-solid";
 import { Button } from "~/lib/components/ui/button";
 import { ClickEvent, Todo } from "~/lib/types";
+import { deleteTodoMutation } from "../api/deleteTodo";
 
 type Props = {
   todo: Todo;
@@ -42,7 +43,7 @@ export function TodoItem({ todo, onShowExpandedView }: Props) {
     }
   }
   function handleDeleteTodo() {
-    // deleteTodo({ todoId: todo.id });
+    deleteTodoMutation({ id: todo.id })
   }
 
   const { title, due, priority, status, isRecurring, startsAt, color } = todo;
