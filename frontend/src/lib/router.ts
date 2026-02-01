@@ -8,7 +8,8 @@ export const routerConfig = {
     POST: todosController.createTodo,
   },
   "/todos/[id]": {
-    DELETE: todosController.deleteTodo
+    DELETE: todosController.deleteTodo,
+    PATCH: todosController.updateTodo
   }
 }
 

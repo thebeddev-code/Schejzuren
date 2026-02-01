@@ -1,4 +1,4 @@
-import { CreateTodo, DeleteTodo, GetTodos } from "~/go/services/TodoService";
+import { CreateTodo, DeleteTodo, GetTodos, UpdateTodo } from "~/go/services/TodoService";
 import { Todo } from "../types/index";
 import { todoPayloadSchema } from "../schemas/todo.schema";
 import z from "zod";
@@ -17,8 +17,8 @@ export async function getTodos() {
   return GetTodos()
 }
 
-export function updateTodo() {
-
+export async function updateTodo({ id, body }: { id: number, body: Partial<Todo> }) {
+  UpdateTodo(id, body as Todo)
 }
 
 export function deleteTodo({ id }: { id: number }) {
