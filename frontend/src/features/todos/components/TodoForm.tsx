@@ -25,30 +25,13 @@ import z from "zod";
  *
  * */
 
-type FormData = Omit<CreateTodoPayload, "color"> & {
-  color: Color,
+type FormData = CreateTodoPayload & {
   monthlyDate: string
 }
 
 // NOTE: Not the best form and a lot can be improved but it gets the job done
 export function TodoForm() {
-  const [formData, setFormData] = createStore<FormData>({
-    title: "",
-    isRecurring: false,
-    tags: [],
-    createdAt: new Date().toISOString(),
-    description: "",
-    priority: "low",
-    status: "pending",
-    updatedAt: new Date().toISOString(),
-    due: new Date().toISOString(),
-    startsAt: new Date().toISOString(),
-    recurrenceRule: "",
-    monthlyDate: new Date().toString(),
-    ...(todoFormStore.todoData ?? {}),
-    // TODO: convert from HUE to hsl or hex  -> todoFormStore.todoData?.color ?? 
-    color: parseColor("hsl(80, 100%, 50%)"),
-  });
+  const [formData, setFormData] = createStore<FormData>(todoFormStore.todoData);
   const [formErrors, setFormErrors] = createStore<Partial<Todo>>({});
   const [formTouched, setFormTouched] = createStore<Partial<Record<keyof Todo, boolean>>>({});
 
@@ -129,7 +112,7 @@ export function TodoForm() {
   // Form Validation
   createEffect(() => {
     const formData = unwrap(getFormData());
-    formData.color = formData.color.toString("hex") as unknown as Color;
+    // formData.color = formData.color.toString("hex") as unknown as Color;
     const formTouched = unwrap(getFormTouched());
 
     const { error } = todoPayloadSchema.safeParse(formData)
@@ -148,7 +131,7 @@ export function TodoForm() {
   async function handleSubmit(e: SubmitEvent) {
     e.preventDefault()
     const data = unwrap(formData);
-    data.color = data.color.toString("hex") as unknown as Color;
+    // data.color = data.color.toString("hex") as unknown as Color;
     const { success, error } = todoPayloadSchema.safeParse(data)
     try {
       if (success)
@@ -170,7 +153,6 @@ export function TodoForm() {
         formType: null,
         todoData: undefined
       })
-
     }
   }
 
@@ -294,7 +276,7 @@ export function TodoForm() {
       </Show>
 
 
-      <div class="flex flex-wrap items-start gap-6 p-4 bg-slate-50 rounded-xl border border-slate-200">
+      <div class="flex flex-wrap items-end gap-6 p-4 pt-3 bg-slate-50 rounded-xl border border-slate-200">
         {/* Priority Select */}
         <div class="flex-1 min-w-50">
           <Select
@@ -340,31 +322,26 @@ export function TodoForm() {
         </div>
 
         {/* Color Picker */}
-        <div class="flex-1 min-w-62.5">
-          <ColorSlider
-            defaultValue={formData.color}
-            value={formData.color}
-            channel="hue"
+        <div class="flex-1 flex items-end min-w-62.5 gap-3">
+          <ColorSwatch
+            class="w-10 h-10 rounded-full border-slate-400 border shadow-sm"
+            value={parseColor(formData.color ?? "rgb(0,0,0)")}
+          />
+          <TextField
+            class="flex flex-col gap-1 flex-1"
+            value="color"
             onChange={createFieldChangeHandler("color")}
           >
-            <div class="flex items-center justify-between mb-2">
-              <ColorSlider.Label class="text-sm font-semibold text-slate-800">
-                Color
-              </ColorSlider.Label>
-              <ColorSlider.ValueLabel class="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded" />
-            </div>
-            <div class="flex items-center gap-3">
-              <ColorSwatch
-                class="w-10 h-10 rounded-md border border-slate-600/50"
-                value={formData.color}
-              />
-              <ColorSlider.Track class="relative flex-1 h-2 bg-gradient-to-r from-red-500 via-yellow-500 to-blue-500 rounded-full shadow-inner cursor-pointer">
-                <ColorSlider.Thumb class="block w-4 h-4 -mt-1 bg-white border-2 border-slate-400 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400">
-                  <ColorSlider.Input />
-                </ColorSlider.Thumb>
-              </ColorSlider.Track>
-            </div>
-          </ColorSlider>
+            <TextField.Label class="text-sm font-medium text-slate-700">
+              Color
+            </TextField.Label>
+            <TextField.Input
+              type="color"
+              class="w-full px-3 py-2 rounded-md border border-slate-300 
+             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1
+             cursor-pointer"
+            />
+          </TextField>
         </div>
       </div>
 
