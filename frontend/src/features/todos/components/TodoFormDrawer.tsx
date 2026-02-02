@@ -9,20 +9,28 @@ export function TodoFormDrawer() {
     <div
       onClick={() => setTodoFormStore((s) => ({ ...s, formType: null }))}
       class={cn(
-        "right-0 min-w-dvw min-h-dvh fixed z-50 bg-black/10 backdrop-blur-sm transition-transform duration-400 ease-in-out",
+        "right-0 min-w-dvw min-h-dvh bg-black/20 fixed opacity-100 z-50 backdrop-blur-sm transition-colors duration-400 ease-in-out",
         {
-          "translate-x-0": todoFormStore.formType, // Slide in (visible)
-          "translate-x-full": !todoFormStore.formType, // Slide out (off-screen right)
+          "-z-10 opacity-0 bg-transparent": !todoFormStore.formType,
         }
       )}
     >
       <div
-        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
-        class="relative max-h-dvh overflow-y-scroll left-1/2 w-1/2 bg-white dark:bg-gray-900 "
+        onClick={(e) => e.stopPropagation()}
+        class="relative left-full"
       >
-        <Show when={Boolean(todoFormStore.formType)}>
-          <TodoForm />
-        </Show>
+        <div
+
+          class={cn("max-h-dvh w-1/2 overflow-y-scroll transform",
+            "transition-transform duration-400 ease-in-out bg-white dark:bg-gray-900", {
+            "translate-x-0": !todoFormStore.formType,
+            "-translate-x-full": todoFormStore.formType
+          })}
+        >
+          <Show when={todoFormStore.formType}>
+            <TodoForm />
+          </Show>
+        </div>
       </div>
     </div>
   );
