@@ -43,10 +43,10 @@ export function TodoList({ todos }: { todos: Accessor<Todo[]> }) {
         <Button
           variant="secondary"
           class="w-30 border hover:border-blue-500"
-          onClick={() => setTodoFormStore((s) => ({
-            ...s,
-            formType: "create"
-          }))}
+          onClick={() => setTodoFormStore({
+            formType: "create",
+            todoData: null
+          })}
         >
           <Plus class="text-slate-800" />
         </Button>
