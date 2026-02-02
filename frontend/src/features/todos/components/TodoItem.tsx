@@ -65,7 +65,10 @@ export function TodoItem({ todo, onShowExpandedView }: Props) {
       />
       <div
         class="relative z-10 flex items-center justify-between gap-3 bg-transparent px-3 py-2 text-sm"
-        onClick={() => onShowExpandedView?.(todo.id)}
+        onClick={(e) => {
+          e.stopPropagation();
+          handleEditTodo();
+        }}
       >
         <button
           type="button"
@@ -121,7 +124,7 @@ export function TodoItem({ todo, onShowExpandedView }: Props) {
           aria-label="Delete todo"
           title="Delete todo"
           size={"icon"}
-          class="h-6 w-6 p-2 text-slate-700/20 border-gray-200/70 shadow-none hover:border-red-500 hover:text-red-600 transition-colors"
+          class="h-6 w-6 p-1 text-slate-700/20 border-gray-200/70 shadow-none hover:border-red-500 hover:text-red-600 transition-colors"
 
           onClick={(e: ClickEvent<HTMLButtonElement>) => {
             e.stopPropagation();
@@ -135,7 +138,7 @@ export function TodoItem({ todo, onShowExpandedView }: Props) {
           aria-label="Edit todo"
           title="Edit todo"
           size={"icon"}
-          class="h-6 w-6 p-2 text-slate-700/20 border-gray-200/70 shadow-none hover:border-slate-500 hover:text-slate-600 transition-colors"
+          class="h-6 w-6 p-1 text-slate-700/20 border-gray-200/70 shadow-none hover:border-slate-500 hover:text-slate-600 transition-colors"
           onClick={(e: ClickEvent<HTMLButtonElement>) => {
 
             e.stopPropagation();
