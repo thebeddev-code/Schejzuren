@@ -4,6 +4,7 @@ import { Button } from "~/lib/components/ui/button";
 import { ClickEvent, Todo } from "~/lib/types";
 import { deleteTodoMutation } from "../api/deleteTodoMutation";
 import { completeTodoMutation } from "../api/completeTodoMutation";
+import { setTodoFormStore } from "./todoFormStore";
 
 type Props = {
   todo: Todo;
@@ -26,13 +27,16 @@ export function TodoItem({ todo, onShowExpandedView }: Props) {
   //   },
   // });
   function handleEditTodo() {
-    // changeFormType("update", todo);
+    setTodoFormStore({
+      formType: "update",
+      todoData: todo
+    })
   }
   function handleCompleteTodo() {
     if (todo.status === "completed") {
       completeTodoMutation({
         id: todo.id,
-        completedAt: null,
+        completedAt: "",
         status: "pending",
       });
     } else {
