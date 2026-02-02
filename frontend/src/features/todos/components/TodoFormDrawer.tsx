@@ -1,5 +1,5 @@
 import { Show } from "solid-js"
-import { setTodoFormStore, todoFormStore } from "./todoFormStore"
+import { closeTodoForm, todoFormStore } from "./todoFormStore"
 import { TodoForm } from "./TodoForm"
 import { cn } from "~/lib/utils/cn"
 
@@ -7,7 +7,7 @@ import { cn } from "~/lib/utils/cn"
 export function TodoFormDrawer() {
   return (
     <div
-      onClick={() => setTodoFormStore((s) => ({ ...s, formType: null }))}
+      onClick={closeTodoForm}
       class={cn(
         "right-0 min-w-dvw min-h-dvh bg-black/20 fixed opacity-100 z-50 backdrop-blur-sm transition-colors duration-400 ease-in-out",
         {
