@@ -29,7 +29,7 @@ export const [todoFormStore, setTodoFormStore] = createStore<TodoFormStore>({
   formType: null,
 })
 
-export function openTodoForm(formType: FormTypes, todo?: Todo) {
+export const openTodoForm = (formType: FormTypes, todo?: Todo) => {
   if (formType === "create") {
     return setTodoFormStore({
       formType,
@@ -44,3 +44,7 @@ export function openTodoForm(formType: FormTypes, todo?: Todo) {
   }
 }
 
+export const closeTodoForm = () => setTodoFormStore({
+  formType: null,
+  todoData: null
+})
