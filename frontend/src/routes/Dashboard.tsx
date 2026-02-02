@@ -3,19 +3,18 @@ import { DayVisualizer } from "~/features/visualizer/components/DayVisualizer";
 // import { TodoFormWrapper } from "@/features/todos/TodoFormWrapper";
 // import { TodoList } from "@/features/todos/TodoList";
 import { addDays, set } from "date-fns";
-import { Accessor, createEffect, createSignal, Show } from "solid-js";
+import { Accessor, createEffect, createMemo, createSignal, Show } from "solid-js";
 import { Todo } from "~/lib/types";
 import { createAsync } from "@solidjs/router";
 import { getTodos } from "~/features/todos/api/getTodos";
 import { TodoList } from "~/features/todos/components/TodoList";
 import { TodoForm } from "~/features/todos/components/TodoForm";
 import { TodoFormDrawer } from "~/features/todos/components/TodoFormDrawer";
-import { setTodoFormStore } from "~/features/todos/components/todoFormStore";
+import { openTodoForm, setTodoFormStore, todoFormStore } from "~/features/todos/components/todoFormStore";
 
 export default function Dashboard() {
-  const todos = createAsync(() => getTodos({}));
+  const todosQueryResult = createAsync(() => getTodos({}));
   const [currentDate, setCurrentDate] = createSignal(new Date());
-  createEffect(() => console.log(todos()))
   // const { data, status } = useTodos({
   //   params: {
   //     due: "today",
@@ -27,9 +26,12 @@ export default function Dashboard() {
       <div class="w-50 h-dvh">Kinda sidebar</div>
       <main class="flex-1 h-dvh grid grid-cols-2">
         {/* {status === "success" && todos && ( */}
-        <Show when={todos()}>
+        <Show when={todosQueryResult()}>
           <DayVisualizer
-            todos={todos}
+            todos={createMemo(() => {
+              const t = todosQueryResult() ?? []
+              return [...t, todoFormStore.todoData ?? {}]
+            })}
             currentDate={currentDate}
             onMoveDate={(days) => {
               let date = set(currentDate(), {
@@ -48,13 +50,13 @@ export default function Dashboard() {
             }}
             onFormOpen={(todo) => {
               console.log("Create todo")
-              setTodoFormStore({
-                formType: "create",
-                todoData: todo
-              })
+              openTodoForm(
+                "create",
+                todo
+              )
             }}
           />
-          <TodoList todos={todos} />
+          <TodoList todos={todosQueryResult} />
         </Show>
         {/* )} */}
         {/* {status === "success" && todos && <TodoList todos={todos} />} */}
