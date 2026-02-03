@@ -8,7 +8,6 @@ import { Accessor, createMemo, createSignal, For, Show } from "solid-js";
 import { openTodoForm, setTodoFormStore } from "./todoFormStore";
 
 export function TodoList({ todos }: { todos: Accessor<Todo[]> }) {
-  // const changeFormType = useTodoForm((state) => state.changeFormType);
   const [expandedTodoId, setExpandedTodoId] = createSignal<null | number>(null);
 
   const expandedTodo = createMemo(() => todos().find((t) => t.id == expandedTodoId()));

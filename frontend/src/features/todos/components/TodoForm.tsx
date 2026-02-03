@@ -9,7 +9,6 @@ import { TagsField } from "~/lib/components/ui/form/tags-field";
 import { BlurEvent, Todo } from "~/lib/types";
 import { DEFAULT_TAGS, WEEKDAYS } from "../lib/constants";
 import { Color, parseColor } from "@kobalte/core/colors";
-import { ColorSlider } from "@kobalte/core/color-slider";
 import { trackDeep, trackStore } from "@solid-primitives/deep";
 import { trimAndLowercase } from "~/lib/utils/strings";
 import { createTodo } from "../api/createTodo";
@@ -112,7 +111,6 @@ export function TodoForm() {
   // Form Validation
   createEffect(() => {
     const formData = unwrap(getFormData());
-    // formData.color = formData.color.toString("hex") as unknown as Color;
     const formTouched = unwrap(getFormTouched());
 
     const { error } = todoPayloadSchema.safeParse(formData)
