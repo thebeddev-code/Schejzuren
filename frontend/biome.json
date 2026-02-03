@@ -5,12 +5,17 @@
 		"clientKind": "git",
 		"useIgnoreFile": false
 	},
+	"css": {
+		"parser": {
+			"tailwindDirectives": true
+		}
+	},
 	"files": {
 		"includes": ["**", "!!**/dist"]
 	},
 	"formatter": {
 		"enabled": true,
-		"indentStyle": "tab",
+		"indentStyle": "tab"
 	},
 	"linter": {
 		"enabled": true,
