@@ -11,7 +11,7 @@
 		}
 	},
 	"files": {
-		"includes": ["**", "!!**/dist"]
+		"includes": ["**", "!!**/dist", "!!**/wailsjs"]
 	},
 	"formatter": {
 		"enabled": true,
@@ -21,7 +21,10 @@
 		"enabled": true,
 		"rules": {
 			"recommended": true
-		}
+		},
+    "domains": {
+      "solid": "recommended"
+    }
 	},
 	"javascript": {
 		"formatter": {
