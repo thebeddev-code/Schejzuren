@@ -1,6 +1,9 @@
 package services
 
 import (
+	"strings"
+	"time"
+
 	"gorm.io/gorm"
 )
 
@@ -32,7 +35,9 @@ func NewTodoService(db *gorm.DB) *TodoService {
 
 func (s *TodoService) GetTodos() ([]Todo, error) {
 	var todos []Todo
-	result := s.db.Find(&todos)
+	weekday := time.Now().Weekday().String()
+	lowercaseWeekday := strings.ToLower(weekday)
+	result := s.db.Where("recurrence_rule LIKE ?", "%everyday%").Or("recurrence_rule LIKE ?", "%"+lowercaseWeekday+"%").Find(&todos)
 	return todos, result.Error
 }
 
