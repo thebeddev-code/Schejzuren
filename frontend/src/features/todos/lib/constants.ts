@@ -1,11 +1,11 @@
 export const WEEKDAYS = [
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "friday",
-  "saturday",
-  "sunday",
+	"monday",
+	"tuesday",
+	"wednesday",
+	"thursday",
+	"friday",
+	"saturday",
+	"sunday",
 ];
 
 export const DEFAULT_TAGS = [...WEEKDAYS, "everyday", "monthly", "weekly"];
