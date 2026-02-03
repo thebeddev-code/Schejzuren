@@ -11,6 +11,7 @@ import { TodoList } from "~/features/todos/components/TodoList";
 import { TodoForm } from "~/features/todos/components/TodoForm";
 import { TodoFormDrawer } from "~/features/todos/components/TodoFormDrawer";
 import { openTodoForm, setTodoFormStore, todoFormStore } from "~/features/todos/components/todoFormStore";
+import { VisualizableTodo } from "~/features/visualizer/utils/types";
 
 export default function Dashboard() {
   const todosQueryResult = createAsync(() => getTodos({}));
@@ -21,6 +22,7 @@ export default function Dashboard() {
   //   },
   // });
   // const changeFormType = useTodoForm((state) => state.changeFormType);
+  const todos = createMemo(() => todosQueryResult() ?? [])
   return (
     <div class="flex">
       <div class="w-50 h-dvh">Kinda sidebar</div>
@@ -30,7 +32,7 @@ export default function Dashboard() {
           <DayVisualizer
             todos={createMemo(() => {
               const t = todosQueryResult() ?? []
-              return [...t, todoFormStore.todoData ?? {}]
+              return [...t, todoFormStore.todoData ?? {}] as VisualizableTodo[]
             })}
             currentDate={currentDate}
             onMoveDate={(days) => {
@@ -49,14 +51,13 @@ export default function Dashboard() {
               setCurrentDate(addDays(date, days));
             }}
             onFormOpen={(todo) => {
-              console.log("Create todo")
               openTodoForm(
                 "create",
                 todo
               )
             }}
           />
-          <TodoList todos={todosQueryResult} />
+          <TodoList todos={todos} />
         </Show>
         {/* )} */}
         {/* {status === "success" && todos && <TodoList todos={todos} />} */}
