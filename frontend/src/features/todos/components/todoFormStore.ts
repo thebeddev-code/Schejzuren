@@ -1,4 +1,3 @@
-import { parseColor } from "@kobalte/core/colors";
 import { createStore } from "solid-js/store";
 import { Todo } from "~/lib/types";
 
@@ -29,22 +28,22 @@ export const [todoFormStore, setTodoFormStore] = createStore<TodoFormStore>({
   formType: null,
 })
 
-export const openTodoForm = (formType: FormTypes, todo?: Todo) => {
+export const openTodoForm = (formType: FormTypes, todo?: Partial<Todo>) => {
   if (formType === "create") {
     return setTodoFormStore({
       formType,
       todoData: todo ? { ...CREATE_TODO_DEFAULT_DATA, ...todo } : CREATE_TODO_DEFAULT_DATA
     })
   }
-  if (formType === "update") {
+  if (formType === "update" && todo) {
     return setTodoFormStore({
       formType,
-      todoData: CREATE_TODO_DEFAULT_DATA as unknown as Todo
+      todoData: todo
     })
   }
 }
 
 export const closeTodoForm = () => setTodoFormStore({
   formType: null,
-  todoData: null
+  todoData: {}
 })
