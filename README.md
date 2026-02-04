@@ -71,8 +71,8 @@ If you intend to contribute or build from source, these are the steps that you w
 
 ### Prerequisites
 
-- Rust
-- Rust analyzer
+- Go
+- Wails-go
 - Node.js ≥ 18
 - pnpm
 
@@ -84,13 +84,13 @@ git clone https://github.com/thebeddev-code/todo-clock.git
 cd todo-clock
 
 # Install dependencies (choose your package manager)
-pnpm install      # or yarn install, npm install, bun install
+pnpm install
 ```
 ### Build
 
 ```bash
 # Start the app
-pnpm tauri dev      # or yarn dev, npm dev, bun dev
+pnpm dev 
 ```
 
 ## Contributing
