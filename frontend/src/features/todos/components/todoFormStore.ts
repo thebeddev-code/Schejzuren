@@ -33,14 +33,14 @@ export const openTodoForm = (formType: FormTypes, todo?: Partial<Todo>) => {
 		return setTodoFormStore({
 			formType,
 			todoData: todo
-				? { ...CREATE_TODO_DEFAULT_DATA, ...todo }
-				: CREATE_TODO_DEFAULT_DATA,
+				? structuredClone({ ...CREATE_TODO_DEFAULT_DATA, ...todo })
+				: structuredClone(CREATE_TODO_DEFAULT_DATA),
 		});
 	}
 	if (formType === "update" && todo) {
 		return setTodoFormStore({
 			formType,
-			todoData: todo,
+			todoData: structuredClone(todo),
 		});
 	}
 };
@@ -48,5 +48,5 @@ export const openTodoForm = (formType: FormTypes, todo?: Partial<Todo>) => {
 export const closeTodoForm = () =>
 	setTodoFormStore({
 		formType: null,
-		todoData: {},
+		todoData: structuredClone(CREATE_TODO_DEFAULT_DATA),
 	});
