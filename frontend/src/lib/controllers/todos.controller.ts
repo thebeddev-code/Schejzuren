@@ -1,12 +1,12 @@
+import z from "zod";
 import {
 	CreateTodo,
 	DeleteTodo,
 	GetTodos,
 	UpdateTodo,
 } from "~/go/services/TodoService";
-import type { Todo } from "../types/index";
 import { todoPayloadSchema } from "../schemas/todo.schema";
-import z from "zod";
+import type { Todo } from "../types/index";
 
 export async function createTodo({ body }: { body: Todo }) {
 	try {
@@ -29,7 +29,7 @@ export async function updateTodo({
 	id: number;
 	body: Partial<Todo>;
 }) {
-	UpdateTodo(id, body as Todo);
+	return UpdateTodo(id, body as Todo);
 }
 
 export function deleteTodo({ id }: { id: number }) {
