@@ -48,7 +48,7 @@ export function createTypedQuery<
 	route: E | string,
 ) {
 	return query(
-		(options: EndpointOptions<E, M>) =>
+		(options: EndpointOptions<E, M> = {}) =>
 			handler(options, api) as EndpointResponse<E, M>,
 		route,
 	);
