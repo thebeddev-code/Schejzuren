@@ -246,7 +246,7 @@ export function TodoForm() {
 					onChange={createTimeFieldChangeHandler("due")}
 				>
 					<TextField.Label class="text-sm font-medium text-slate-700">
-						Starts At
+						Due
 					</TextField.Label>
 					<TextField.Input
 						type="time"
