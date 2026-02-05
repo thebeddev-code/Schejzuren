@@ -36,7 +36,6 @@ class ApiClient<
 
 export const api = new ApiClient();
 
-// TODO: Pass a typed fetcher to the handler
 export function createTypedQuery<
 	E extends Endpoints,
 	M extends keyof (typeof routerConfig)[E],

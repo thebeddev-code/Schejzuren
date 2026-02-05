@@ -1,8 +1,6 @@
 import { differenceInCalendarDays } from "date-fns";
-
-import type { DrawableTodo, VisualizableTodo } from "./types.d.ts";
-import type { Todo } from "~/lib/types";
 import { calcDegreesFrom, calcRadiansFrom } from "./math";
+import type { DrawableTodo, VisualizableTodo } from "./types.d.ts";
 
 export function todosToDrawables({
 	todos,
@@ -16,10 +14,10 @@ export function todosToDrawables({
 		.map((t) => {
 			const startsAt = new Date(t.startsAt as string);
 			const endsAt = new Date(t.due as string);
-
 			// Converting the time to hour
 			// Since 1 hours is 60 minutes, we divide by 60
 			// Same for seconds
+			// FIXME: Broken offsetting. Needs fixing
 			let todoStartTime =
 				startsAt.getHours() +
 				startsAt.getMinutes() / 60 +
