@@ -10,35 +10,35 @@ import { getMouseAngleInDegrees } from "./math";
  * the result is negative if mouse pos in degrees is less than {params.clockHandleDegrees}
  */
 export function calcClosestDistToClockHandle({
-  clickEvent,
-  clockHandleDegrees,
+	clickEvent,
+	clockHandleDegrees,
 }: {
-  clickEvent: MouseEvent & { currentTarget: HTMLDivElement };
-  clockHandleDegrees: number;
+	clickEvent: MouseEvent & { currentTarget: HTMLDivElement };
+	clockHandleDegrees: number;
 }) {
-  const normalizedCurrentTimeDegrees = clockHandleDegrees % 360;
+	const normalizedCurrentTimeDegrees = clockHandleDegrees % 360;
 
-  const mouseDegrees = getMouseAngleInDegrees(clickEvent);
-  const clockwise = (mouseDegrees - normalizedCurrentTimeDegrees + 360) % 360;
-  const counterclockwise =
-    (normalizedCurrentTimeDegrees - mouseDegrees + 360) % 360;
+	const mouseDegrees = getMouseAngleInDegrees(clickEvent);
+	const clockwise = (mouseDegrees - normalizedCurrentTimeDegrees + 360) % 360;
+	const counterclockwise =
+		(normalizedCurrentTimeDegrees - mouseDegrees + 360) % 360;
 
-  function isPastCurrentTimeAngle() {
-    if (
-      normalizedCurrentTimeDegrees < 360 &&
-      (normalizedCurrentTimeDegrees + 180) % 360 < normalizedCurrentTimeDegrees
-    ) {
-      return (
-        (normalizedCurrentTimeDegrees <= mouseDegrees && mouseDegrees <= 360) ||
-        (mouseDegrees >= 0 &&
-          mouseDegrees <= (normalizedCurrentTimeDegrees + 180) % 360)
-      );
-    }
-    return (
-      normalizedCurrentTimeDegrees <= mouseDegrees &&
-      mouseDegrees <= normalizedCurrentTimeDegrees + 180
-    );
-  }
-  const distDegrees = isPastCurrentTimeAngle() ? clockwise : -counterclockwise;
-  return distDegrees;
+	function isPastCurrentTimeAngle() {
+		if (
+			normalizedCurrentTimeDegrees < 360 &&
+			(normalizedCurrentTimeDegrees + 180) % 360 < normalizedCurrentTimeDegrees
+		) {
+			return (
+				(normalizedCurrentTimeDegrees <= mouseDegrees && mouseDegrees <= 360) ||
+				(mouseDegrees >= 0 &&
+					mouseDegrees <= (normalizedCurrentTimeDegrees + 180) % 360)
+			);
+		}
+		return (
+			normalizedCurrentTimeDegrees <= mouseDegrees &&
+			mouseDegrees <= normalizedCurrentTimeDegrees + 180
+		);
+	}
+	const distDegrees = isPastCurrentTimeAngle() ? clockwise : -counterclockwise;
+	return distDegrees;
 }

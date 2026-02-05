@@ -1,10 +1,10 @@
-import { api, createTypedQuery } from "~/lib/client";
+import { createTypedQuery } from "~/lib/client";
+import { TODO_QUERY_KEYS } from "../lib/constants";
 
-export const getTodos = createTypedQuery<"/todos", "GET">(async (options) => {
-  const todos = (await api.get<"/todos", "GET">("/todos", options))
-  return todos ?? [];
-}, "/todos");
-
-
-
-
+export const getTodos = createTypedQuery<"/todos", "GET">(
+	async (options, api) => {
+		const todos = await api.get("/todos", options);
+		return todos ?? [];
+	},
+	TODO_QUERY_KEYS.todos,
+);

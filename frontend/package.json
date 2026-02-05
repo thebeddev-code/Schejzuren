@@ -1,36 +1,36 @@
 {
-  "name": "todo-clock",
-  "version": "0.1.0",
-  "description": "",
-  "type": "module",
-  "scripts": {
-    "start": "vite",
-    "dev": "vite",
-    "build": "vite build",
-    "serve": "vite preview"
-  },
-  "license": "MIT",
-  "dependencies": {
-    "@kobalte/core": "^0.13.11",
-    "@modular-forms/solid": "^0.25.1",
-    "@solid-primitives/deep": "^0.3.3",
-    "@solidjs/router": "^0.15.4",
-    "@tailwindcss/vite": "^4.1.18",
-    "@tscircuit/routematch": "^1.0.1",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "date-fns": "^4.1.0",
-    "lucide-solid": "^0.562.0",
-    "solid-js": "^1.9.3",
-    "tailwind-merge": "^3.4.0",
-    "tailwindcss": "^4.1.18",
-    "zod": "^4.3.5"
-  },
-  "devDependencies": {
-    "prettier": "^3.8.0",
-    "typescript": "~5.6.2",
-    "vite": "^6.0.3",
-    "vite-plugin-solid": "^2.11.0",
-    "vite-tsconfig-paths": "^6.0.4"
-  }
+	"name": "todo-clock",
+	"version": "0.1.0",
+	"description": "",
+	"type": "module",
+	"scripts": {
+		"start": "vite",
+		"dev": "vite",
+		"build": "vite build",
+		"serve": "vite preview"
+	},
+	"license": "MIT",
+	"dependencies": {
+		"@kobalte/core": "^0.13.11",
+		"@modular-forms/solid": "^0.25.1",
+		"@solid-primitives/deep": "^0.3.3",
+		"@solidjs/router": "^0.15.4",
+		"@tailwindcss/vite": "^4.1.18",
+		"@tscircuit/routematch": "^1.0.1",
+		"class-variance-authority": "^0.7.1",
+		"clsx": "^2.1.1",
+		"date-fns": "^4.1.0",
+		"lucide-solid": "^0.562.0",
+		"solid-js": "^1.9.3",
+		"tailwind-merge": "^3.4.0",
+		"tailwindcss": "^4.1.18",
+		"zod": "^4.3.5"
+	},
+	"devDependencies": {
+		"prettier": "^3.8.0",
+		"typescript": "~5.6.2",
+		"vite": "^6.0.3",
+		"vite-plugin-solid": "^2.11.0",
+		"vite-tsconfig-paths": "^6.0.4"
+	}
 }

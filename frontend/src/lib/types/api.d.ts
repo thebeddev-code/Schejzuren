@@ -1,6 +1,5 @@
 import { services } from "~/go/models";
 
-
 export type Todo = services.Todo;
 
 // export type Todo = {
@@ -21,4 +20,3 @@ export type Todo = services.Todo;
 //   recurrenceRule?: string | null;
 // };
 //
-

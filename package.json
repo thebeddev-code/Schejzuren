@@ -1,0 +1,19 @@
+{
+	"devDependencies": {
+		"@biomejs/biome": "2.3.14",
+		"lefthook": "^2.1.0"
+	},
+	"scripts": {
+		"lint:unstaged:fix": "git diff --name-only --diff-filter=ACM | xargs -r biome lint --write --unsafe",
+		"biome:unstaged:fix": "git diff --name-only --diff-filter=ACM | xargs -r biome check --write --unsafe",
+		"format": "biome format --write frontend/*",
+		"luf": "pnpm lint:unstaged:fix",
+		"buf": "pnpm biome:unstaged:fix",
+		"dev": "pnpm exec wails dev -tags webkit2_41 -browser"
+	},
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"lefthook"
+		]
+	}
+}
