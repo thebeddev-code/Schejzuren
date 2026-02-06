@@ -8,8 +8,8 @@
 
 </div>
 
-<h1 align="center">Todo clock</h1>
-<p align="center">A To-Do app that makes todos management feel natural. </p>
+<h1 align="center">Schejzuren</h1>
+<p align="center"> A productivity app that makes aims to make management of your time more productive. </p>
 <div align="center">
     <img src="https://github.com/thebeddev-code/todo-clock/blob/main/public/appbanner.png" />  
 </div>
