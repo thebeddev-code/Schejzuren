@@ -232,7 +232,7 @@ export function TodoForm() {
 					</TextField.Label>
 					<TextField.TextArea
 						placeholder="Add some details..."
-						class="px-3 py-2 rounded-md border border-border focus:outline-none focus:ring-1 focus:ring-(--focus-ring) min-h-[100px]"
+						class="px-3 py-2 rounded-md border border-border focus:outline-none focus:ring-1 focus:ring-(--focus-ring) min-h-25"
 					/>
 				</TextField>
 			</div>
