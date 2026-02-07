@@ -1,19 +1,5 @@
-import { addHours, formatDate, set } from "date-fns";
-import { DEGREES_PER_HOUR } from "../utils/constants";
-import type { Todo } from "~/lib/types";
-
-import { calcClosestDistToClockHandle } from "../utils/distToClockHandle";
-import { drawTodos, todosToDrawables } from "../utils/drawTodos";
-import {
-	calcDegreesFrom,
-	getCurrentTimeInDegrees,
-	snapToStep,
-} from "../utils/math";
-import { Clock } from "./Clock";
-import { ColorWheel } from "./ColorWheel";
-import { ClockHandle } from "./ClockHandle";
-import { degreesToDate } from "../utils/date";
-import { Sunrise, Sun, Sunset, Moon, ChevronUp } from "lucide-solid";
+import { formatDate } from "date-fns";
+import { ChevronUp, Moon, Sun, Sunrise, Sunset } from "lucide-solid";
 import {
 	type Accessor,
 	createEffect,
@@ -21,8 +7,20 @@ import {
 	createSignal,
 	Show,
 } from "solid-js";
-import type { ClickEvent } from "~/lib/types";
+import type { ClickEvent, Todo } from "~/lib/types";
+import { DEGREES_PER_HOUR } from "../utils/constants";
+import { degreesToDate } from "../utils/date";
+import { calcClosestDistToClockHandle } from "../utils/distToClockHandle";
+import { drawTodos, todosToDrawables } from "../utils/drawTodos";
+import {
+	calcDegreesFrom,
+	getCurrentTimeInDegrees,
+	snapToStep,
+} from "../utils/math";
 import type { VisualizableTodo } from "../utils/types";
+import { Clock } from "./Clock";
+import { ClockHandle } from "./ClockHandle";
+import { ColorWheel } from "./ColorWheel";
 
 const RADIUS = 170;
 const MAX_LAST_CLICK_DIFF_MS = 300;
@@ -142,7 +140,7 @@ export function DayVisualizer({
 		}
 
 		const lastClickTime = lastClickTimeRef;
-		const currentClickTime = new Date().getTime();
+		const currentClickTime = Date.now();
 		if (currentClickTime - lastClickTime < MAX_LAST_CLICK_DIFF_MS) {
 			const offset = calcClosestDistToClockHandle({
 				clickEvent: e,
@@ -166,11 +164,18 @@ export function DayVisualizer({
 	);
 
 	return (
-		<div class="select-none mt-20 bg-white flex-col flex justify-center items-center">
+		<div class="select-none mt-20 bg-background flex-col flex justify-center items-center">
+			{/* Tried to replace with btn but it was unsuccessful and lead to render errors */}
+			{/* Logically, people who suffer from blindess aren't supposed to create activity through the visualizer at all */}
+			{/* Since it's a tool primary for convenience */}
+			{/* It should however be feasible to make it a11y compliant */}
+			{/* biome-ignore lint/a11y/noStaticElementInteractions: The visualizer needs to be interactive  */}
+			{/* biome-ignore lint/a11y/useKeyWithClickEvents: This isn't supposed to be interacted with keys */}
 			<div class="relative rounded-full" onClick={handleCreateTodoClick}>
 				{/* Date switching */}
 				<div class="flex flex-row items-center gap-4 absolute -top-20 left-1/2 -translate-x-1/2">
 					<button
+						type="button"
 						onClick={() => handleMoveDateClick(-1)}
 						class="text-center h-5 w-5 rounded-full bg-muted text-xs font-medium text-muted-foreground select-none"
 					>
@@ -180,6 +185,7 @@ export function DayVisualizer({
 						{formatDate(currentDate?.() ?? new Date(), "PP")}
 					</div>
 					<button
+						type="button"
 						onClick={() => handleMoveDateClick(1)}
 						class="text-center h-5 w-5 rounded-full bg-muted text-xs font-medium text-muted-foreground select-none"
 					>
@@ -237,6 +243,8 @@ export function DayVisualizer({
 						<Clock ref={canvasRef} />
 					</Show>
 				</ClockHandle>
+
+				{/* Wheel indicator time of the day	 */}
 				<ColorWheel
 					degrees={
 						// Normalizing degrees to avoid an edge case of unmatched value
