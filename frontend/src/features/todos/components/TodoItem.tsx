@@ -36,7 +36,7 @@ export function TodoItem({ todo }: Props) {
 	const isCompleted = status === "completed";
 
 	return (
-		<div class="overflow-hidden relative bg-background rounded-md border border-border/50 hover:border-(--accent-hover)/40 transition cursor-pointer">
+		<div class="overflow-hidden relative bg-background rounded-md border border-border hover:border-(--accent-hover)/40 transition cursor-pointer">
 			<div
 				class="absolute h-40 w-40 rounded-full -top-10 -left-8"
 				style={{
