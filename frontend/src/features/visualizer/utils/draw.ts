@@ -1,47 +1,47 @@
 import { differenceInCalendarDays } from "date-fns";
-import { calcDegreesFrom, calcRadiansFrom } from "./math";
-import type { DrawableTodo, VisualizableTodo } from "./types.d.ts";
+import { calcDegreesFrom, calcRadiansFrom } from "./math.ts";
+import type { Drawable, VisualizableItem } from "./types";
 
-export function todosToDrawables({
-	todos,
+export function visualizableToDrawable({
+	visualizableItems,
 	now = new Date(),
 }: {
-	todos: VisualizableTodo[];
+	visualizableItems: VisualizableItem[];
 	now?: Date;
-}): DrawableTodo[] {
-	return todos
-		.filter((t) => t.startsAt && t.due)
-		.map((t) => {
-			const startsAt = new Date(t.startsAt as string);
-			const endsAt = new Date(t.due as string);
+}): Drawable[] {
+	return visualizableItems
+		.filter((v) => v.startsAt && v.due)
+		.map((v) => {
+			const startsAt = new Date(v.startsAt as string);
+			const endsAt = new Date(v.due as string);
 			// Converting the time to hour
 			// Since 1 hours is 60 minutes, we divide by 60
 			// Same for seconds
 			// FIXME: Broken offsetting. Needs fixing
-			let todoStartTime =
+			let startTime =
 				startsAt.getHours() +
 				startsAt.getMinutes() / 60 +
 				startsAt.getSeconds() / 3600;
-			todoStartTime += 24 * differenceInCalendarDays(startsAt, now);
+			startTime += 24 * differenceInCalendarDays(startsAt, now);
 
-			let todoEndTime =
+			let endTime =
 				endsAt.getHours() +
 				endsAt.getMinutes() / 60 +
 				endsAt.getSeconds() / 3600;
-			// In todo spans today and the next day
-			todoEndTime += 24 * differenceInCalendarDays(endsAt, now);
+			// In item spans today and the next day
+			endTime += 24 * differenceInCalendarDays(endsAt, now);
 
 			return {
-				startTimeHours: todoStartTime,
-				endTimeHours: todoEndTime,
-				color: t.color ?? "black",
+				startTimeHours: startTime,
+				endTimeHours: endTime,
+				color: v.color ?? "black",
 			};
 		});
 }
 
-interface DrawTodos {
+interface DrawDrawableItems {
 	canvas: HTMLCanvasElement;
-	drawableTodos: DrawableTodo[];
+	drawableItems: Drawable[];
 	x?: number;
 	y?: number;
 	radius?: number;
@@ -51,19 +51,19 @@ interface DrawTodos {
 	};
 }
 
-export function drawTodos({
+export function drawDrawableItems({
 	canvas,
-	drawableTodos,
+	drawableItems,
 	x,
 	y,
 	radius,
 	viewHours,
-}: DrawTodos) {
+}: DrawDrawableItems) {
 	const ctx = canvas.getContext("2d");
 	if (!ctx) return;
 	const rect = canvas.getBoundingClientRect();
 
-	const drawTodo = (
+	const drawItem = (
 		drawRadiansStart: number,
 		drawRadiansEnd: number,
 		offset: number,
@@ -84,7 +84,7 @@ export function drawTodos({
 		ctx.stroke();
 	};
 
-	for (const { startTimeHours, endTimeHours, color } of drawableTodos) {
+	for (const { startTimeHours, endTimeHours, color } of drawableItems) {
 		const drawDegreesStart = calcDegreesFrom(
 			Math.max(startTimeHours, viewHours.start),
 			"hours",
@@ -97,7 +97,7 @@ export function drawTodos({
 		const drawRadiansStart = calcRadiansFrom(drawDegreesStart);
 		const drawRadiansEnd = calcRadiansFrom(drawDegreesEnd);
 		if (viewHours.start <= endTimeHours && viewHours.end >= startTimeHours)
-			drawTodo(
+			drawItem(
 				drawRadiansStart,
 				drawRadiansEnd,
 				calcRadiansFrom(90),

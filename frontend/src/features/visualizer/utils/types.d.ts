@@ -1,8 +1,8 @@
 import { Todo } from "~/lib/types";
 
-export type VisualizableTodo = Pick<Todo, "startsAt" | "due" | "color">;
+export type VisualizableItem = Pick<Todo, "startsAt" | "due" | "color">;
 
-export type DrawableTodo = {
+export type Drawable = {
 	startTimeHours: number;
 	endTimeHours: number;
 	color: string;

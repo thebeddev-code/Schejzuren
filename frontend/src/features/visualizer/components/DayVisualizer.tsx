@@ -7,17 +7,17 @@ import {
 	createSignal,
 	Show,
 } from "solid-js";
-import type { ClickEvent, Todo } from "~/lib/types";
+import type { ClickEvent } from "~/lib/types";
 import { DEGREES_PER_HOUR } from "../utils/constants";
 import { degreesToDate } from "../utils/date";
 import { calcClosestDistToClockHandle } from "../utils/distToClockHandle";
-import { drawTodos, todosToDrawables } from "../utils/drawTodos";
+import { drawDrawableItems, visualizableToDrawable } from "../utils/draw";
 import {
 	calcDegreesFrom,
 	getCurrentTimeInDegrees,
 	snapToStep,
 } from "../utils/math";
-import type { VisualizableTodo } from "../utils/types";
+import type { VisualizableItem } from "../utils/types";
 import { Clock } from "./Clock";
 import { ClockHandle } from "./ClockHandle";
 import { ColorWheel } from "./ColorWheel";
@@ -29,14 +29,14 @@ const VIEW_HOURS = 6;
 const MAX_TOTAL_DEGREES = 360 * 2;
 
 interface Props {
-	todos: Accessor<VisualizableTodo[]>;
-	onFormOpen?: (data: VisualizableTodo) => void;
+	visualizableItems: Accessor<VisualizableItem[]>;
+	onFormOpen?: (data: VisualizableItem) => void;
 	onMoveDate?: (days: number) => void;
 	currentDate?: Accessor<Date>;
 }
 
 export function DayVisualizer({
-	todos,
+	visualizableItems,
 	onFormOpen,
 	onMoveDate,
 	currentDate,
@@ -48,16 +48,17 @@ export function DayVisualizer({
 		currentAngle: currentTimeInDegrees % 360,
 		totalAngle: currentTimeInDegrees,
 	});
-	const [createTodoDegrees, setCreateTodoDegrees] = createSignal<{
-		start: null | number;
-		end: null | number;
-	}>({
-		start: null,
-		end: null,
-	});
+	const [newVisualizableItemDegrees, setNewVisualizableItemDegrees] =
+		createSignal<{
+			start: null | number;
+			end: null | number;
+		}>({
+			start: null,
+			end: null,
+		});
 
-	const newTodo = createMemo<VisualizableTodo | null>(() => {
-		const { start, end } = createTodoDegrees();
+	const newVisualizableItem = createMemo<VisualizableItem | null>(() => {
+		const { start, end } = newVisualizableItemDegrees();
 		if (!start || !end) return null;
 		return {
 			startsAt: degreesToDate(start).toString(),
@@ -65,6 +66,7 @@ export function DayVisualizer({
 			color: "#6F456E",
 		};
 	});
+
 	createEffect(() => {
 		const canvas = canvasRef;
 		if (!canvas) {
@@ -78,19 +80,21 @@ export function DayVisualizer({
 		}
 		const dpr = window.devicePixelRatio || 1;
 		const rect = canvas.getBoundingClientRect();
-
 		// Set internal resolution
 		canvas.width = rect.width * dpr;
 		canvas.height = rect.height * dpr;
 		ctx.scale(dpr, dpr);
 
 		const viewHoursStart = clockHandleDegrees().totalAngle / DEGREES_PER_HOUR;
-		const copyTodos = [...todos()];
-		if (newTodo()) copyTodos.push(newTodo() as Todo);
-		const drawableTodos = todosToDrawables({ todos: copyTodos });
-		drawTodos({
+		const copyVisualizableItems = [...visualizableItems()];
+		if (newVisualizableItem())
+			copyVisualizableItems.push(newVisualizableItem() as VisualizableItem);
+		const drawableItems = visualizableToDrawable({
+			visualizableItems: copyVisualizableItems,
+		});
+		drawDrawableItems({
 			canvas,
-			drawableTodos: drawableTodos,
+			drawableItems,
 			radius: RADIUS,
 			viewHours: {
 				start: viewHoursStart - VIEW_HOURS,
@@ -118,24 +122,26 @@ export function DayVisualizer({
 		}
 	}
 
-	function handleCreateTodoClick(e: ClickEvent<HTMLDivElement>) {
+	function handleCreateVisualizableClick(e: ClickEvent<HTMLDivElement>) {
 		// On the second double click we open the form and pass down the data
 		if (
-			typeof createTodoDegrees().start === "number" &&
-			typeof createTodoDegrees().end === "number" &&
-			newTodo()
+			typeof newVisualizableItemDegrees().start === "number" &&
+			typeof newVisualizableItemDegrees().end === "number" &&
+			newVisualizableItem()
 		) {
-			const hours = (createTodoDegrees().end ?? 0) / DEGREES_PER_HOUR;
+			const hours = (newVisualizableItemDegrees().end ?? 0) / DEGREES_PER_HOUR;
 			const step = 15 / 60;
 			// FIXME: doesn't take in calculation the currently set date
 			onFormOpen?.({
-				startsAt: new Date(newTodo()?.startsAt as string).toISOString(),
+				startsAt: new Date(
+					newVisualizableItem()?.startsAt as string,
+				).toISOString(),
 				due: degreesToDate(
 					calcDegreesFrom(snapToStep(hours, step), "hours"),
 				).toISOString(),
 				color: "#4A90E2",
 			});
-			setCreateTodoDegrees({ start: null, end: null });
+			setNewVisualizableItemDegrees({ start: null, end: null });
 			return;
 		}
 
@@ -149,7 +155,7 @@ export function DayVisualizer({
 			const hours =
 				(clockHandleDegrees().totalAngle + offset) / DEGREES_PER_HOUR;
 			const step = 15 / 60; // 15 minutes
-			setCreateTodoDegrees({
+			setNewVisualizableItemDegrees({
 				start: calcDegreesFrom(snapToStep(hours, step), "hours"),
 				end: null,
 			});
@@ -171,7 +177,10 @@ export function DayVisualizer({
 			{/* It should however be feasible to make it a11y compliant */}
 			{/* biome-ignore lint/a11y/noStaticElementInteractions: The visualizer needs to be interactive  */}
 			{/* biome-ignore lint/a11y/useKeyWithClickEvents: This isn't supposed to be interacted with keys */}
-			<div class="relative rounded-full" onClick={handleCreateTodoClick}>
+			<div
+				class="relative rounded-full"
+				onClick={handleCreateVisualizableClick}
+			>
 				{/* Date switching */}
 				<div class="flex flex-row items-center gap-4 absolute -top-20 left-1/2 -translate-x-1/2">
 					<button
@@ -216,18 +225,18 @@ export function DayVisualizer({
 					resetValue={(v) => setClockHandleDegrees(v)}
 					clockGraphRadius={RADIUS}
 				>
-					<Show when={typeof createTodoDegrees().start === "number"}>
+					<Show when={typeof newVisualizableItemDegrees().start === "number"}>
 						<ClockHandle
 							value={createMemo(() => ({
-								currentAngle: createTodoDegrees().start as number,
-								totalAngle: createTodoDegrees().start ?? 0,
+								currentAngle: newVisualizableItemDegrees().start as number,
+								totalAngle: newVisualizableItemDegrees().start ?? 0,
 							}))}
 							clockGraphRadius={RADIUS}
 							onChange={(_, total) => {
 								if (!total) return;
-								if (!createTodoDegrees().start) return;
-								// if (total < createTodoDegrees().start ?? 0) return;
-								setCreateTodoDegrees(({ start }) => ({
+								if (!newVisualizableItemDegrees().start) return;
+								// if (total < newVisualizableItemDegrees().start ?? 0) return;
+								setNewVisualizableItemDegrees(({ start }) => ({
 									start,
 									end: total,
 								}));
@@ -239,7 +248,7 @@ export function DayVisualizer({
 							<Clock ref={canvasRef} />
 						</ClockHandle>
 					</Show>
-					<Show when={typeof createTodoDegrees().start !== "number"}>
+					<Show when={typeof newVisualizableItemDegrees().start !== "number"}>
 						<Clock ref={canvasRef} />
 					</Show>
 				</ClockHandle>

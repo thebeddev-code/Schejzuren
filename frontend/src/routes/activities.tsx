@@ -9,7 +9,7 @@ import {
 	todoFormStore,
 } from "~/features/todos/components/todoFormStore";
 import { DayVisualizer } from "~/features/visualizer/components/DayVisualizer";
-import type { VisualizableTodo } from "~/features/visualizer/utils/types";
+import type { VisualizableItem } from "~/features/visualizer/utils/types";
 
 export default function Dashboard() {
 	const todosQueryResult = createAsync(() => getTodos());
@@ -22,9 +22,9 @@ export default function Dashboard() {
 				{/* {status === "success" && todos && ( */}
 				<Show when={todosQueryResult()}>
 					<DayVisualizer
-						todos={createMemo(() => {
+						visualizableItems={createMemo(() => {
 							const t = todosQueryResult() ?? [];
-							return [...t, todoFormStore.todoData ?? {}] as VisualizableTodo[];
+							return [...t, todoFormStore.todoData ?? {}] as VisualizableItem[];
 						})}
 						currentDate={currentDate}
 						onMoveDate={(days) => {

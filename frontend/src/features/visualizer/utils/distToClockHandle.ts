@@ -15,7 +15,7 @@ export function calcClosestDistToClockHandle({
 }: {
 	clickEvent: MouseEvent & { currentTarget: HTMLDivElement };
 	clockHandleDegrees: number;
-}) {
+}): number {
 	const normalizedCurrentTimeDegrees = clockHandleDegrees % 360;
 
 	const mouseDegrees = getMouseAngleInDegrees(clickEvent);
