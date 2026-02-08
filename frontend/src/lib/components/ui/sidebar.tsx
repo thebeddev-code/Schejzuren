@@ -11,7 +11,6 @@ import { cn } from "~/lib/utils/cn";
 
 export function Sidebar() {
 	const [collapsed, setCollapsed] = createSignal(false);
-
 	const toggleSidebar = () => setCollapsed((b) => !b);
 
 	return (
@@ -23,7 +22,7 @@ export function Sidebar() {
 			<button
 				type="button"
 				onClick={toggleSidebar}
-				class="absolute left-[110%] mt-2 p-2 rounded-full hover:bg-gray-200 transition"
+				class="absolute left-[110%] mt-2 p-2 rounded-full text-foreground hover:bg-(--accent-hover) hover:text-background transition-colors duration-300 "
 			>
 				{collapsed() ? (
 					<ChevronRightIcon size={20} />
@@ -36,7 +35,7 @@ export function Sidebar() {
 			<nav class="flex-1 px-2 py-4 space-y-2">
 				<A
 					href="/"
-					class="flex items-center justify-center gap-2 p-3 text-sm text-foreground hover:bg-accent rounded-lg transition group"
+					class="flex items-center justify-center gap-2 p-3 text-sm text-foreground hover:bg-(--accent-hover) hover:text-background rounded-lg transition group"
 				>
 					<ListTodo size={20} />
 					{!collapsed() && <span>Activities</span>}
@@ -44,7 +43,7 @@ export function Sidebar() {
 
 				<A
 					href="/calendar"
-					class="flex items-center justify-center gap-2 p-3 text-sm text-foreground hover:bg-accent rounded-lg transition group"
+					class="flex items-center justify-center gap-2 p-3 text-sm text-foreground hover:bg-(--accent-hover) hover:text-background rounded-lg transition group"
 				>
 					<CalendarIcon size={20} />
 					{!collapsed() && <span>Calendar</span>}
@@ -55,7 +54,7 @@ export function Sidebar() {
 			<div class="px-2 pb-4">
 				<a
 					href="/settings"
-					class="flex items-center justify-center gap-2 p-3 text-sm text-foreground hover:bg-accent rounded-lg transition group"
+					class="flex items-center justify-center gap-2 p-3 text-sm text-foreground hover:bg-(--accent-hover) hover:text-background rounded-lg transition group"
 				>
 					<SettingsIcon size={20} />
 					{!collapsed() && <span>Settings</span>}
