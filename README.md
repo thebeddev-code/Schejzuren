@@ -59,7 +59,7 @@ A tool that helps you to manage yours todos more naturally, by visualizing them 
 
 ## Roadmap
 
-(See wiki)[https://github.com/thebeddev-code/Schejzuren]
+Check the wiki tab or [click on the link](https://github.com/thebeddev-code/Schejzuren/wiki)
 
 ## Getting Started
 
