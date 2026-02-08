@@ -186,17 +186,17 @@ export function DayVisualizer({
 					<button
 						type="button"
 						onClick={() => handleMoveDateClick(-1)}
-						class="text-center h-5 w-5 rounded-full bg-muted text-xs font-medium text-muted-foreground select-none"
+						class="p-1 text-center rounded-full bg-muted text-xs font-medium text-foreground select-none"
 					>
 						<ChevronUp class="-rotate-90" size={16} />
 					</button>
-					<div class="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground select-none">
+					<div class="rounded-full bg-muted px-3 py-1 text-xs font-medium text-foreground select-none">
 						{formatDate(currentDate?.() ?? new Date(), "PP")}
 					</div>
 					<button
 						type="button"
 						onClick={() => handleMoveDateClick(1)}
-						class="text-center h-5 w-5 rounded-full bg-muted text-xs font-medium text-muted-foreground select-none"
+						class="p-1 text-center rounded-full bg-muted text-xs font-medium text-foreground select-none"
 					>
 						<ChevronUp class="rotate-90" size={16} />
 					</button>

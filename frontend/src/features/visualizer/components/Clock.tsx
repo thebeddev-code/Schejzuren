@@ -6,18 +6,18 @@ export function Clock(props: Props) {
 	const hourMarkers = Array.from({ length: 12 }, (_, i) => i + 1);
 	const oneHourOffset = 30;
 	return (
-		<div class="relative h-100 w-100 rounded-full border border-slate-200 bg-linear-to-br from-slate-50 to-slate-200">
+		<div class="relative h-100 w-100 rounded-full bg-background">
 			<canvas class="h-full w-full" ref={props.ref} />
 
 			<div class="pointer-events-none absolute inset-0 flex items-center justify-center">
-				{/* minute/second ticks */}
+				{/* Hour and minute ticks ticks */}
 				{Array.from({ length: 60 }, (_, i) => {
 					const isHourTick = i % 5 === 0;
 					return (
 						<div
 							class={`
-                absolute bg-slate-400
-                ${isHourTick ? "h-4 w-0.5" : "h-2 w-px opacity-70"}
+                absolute bg-accent
+                ${isHourTick ? "h-4 w-0.5 opacity-90" : "h-2 w-px opacity-50"}
               `}
 							style={{
 								transform: `rotate(${i * 6}deg) translateY(-185px)`,
@@ -33,11 +33,11 @@ export function Clock(props: Props) {
 						style={{
 							transform: `rotate(${
 								i * 30 + oneHourOffset
-							}deg) translateY(-150px)`,
+							}deg) translateY(-220px)`,
 						}}
 					>
 						<div
-							class="select-none text-sm font-semibold text-slate-700"
+							class="select-none text-sm font-semibold text-foreground"
 							style={{
 								rotate: `-${i * 30 + oneHourOffset}deg`,
 							}}

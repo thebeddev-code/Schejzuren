@@ -17,8 +17,8 @@ export function ClockHandleTools({ onQuickTimeSwitchClick }: Props) {
 					type="button"
 					class={cn(
 						`absolute 
-                    w-8 h-8 flex items-center justify-center text-gray-500 hover:text-slate-500
-                    bg-white/40 rounded-full border transition-colors duration-300`,
+          	 w-8 h-8 flex items-center justify-center text-foreground hover:bg-(--accent-hover) hover:text-background
+						bg-background rounded-full border transition-colors duration-200 opacity-90`,
 					)}
 					onClick={(e) =>
 						onQuickTimeSwitchClick({
@@ -32,9 +32,9 @@ export function ClockHandleTools({ onQuickTimeSwitchClick }: Props) {
 				</button>
 				<button
 					type="button"
-					class="absolute translate-x-7 -translate-y-7 opacity-40 hover:opacity-100
-                    w-8 h-8 flex items-center justify-center text-gray-500 hover:text-slate-500
-                    bg-white/40 rounded-full border transition-colors duration-300"
+					class="absolute translate-x-7 -translate-y-7 opacity-70 hover:opacity-100
+                    w-8 h-8 flex items-center justify-center text-foreground hover:text-slate-500
+                    bg-background rounded-full border transition-colors duration-300"
 					onClick={(e) =>
 						onQuickTimeSwitchClick({
 							index: 1,
@@ -48,9 +48,9 @@ export function ClockHandleTools({ onQuickTimeSwitchClick }: Props) {
 
 				<button
 					type="button"
-					class="absolute translate-7 opacity-40 hover:opacity-100
-                    w-8 h-8 flex items-center justify-center text-gray-500 hover:text-yellow-500
-                    bg-white/40 rounded-full border transition-colors duration-300"
+					class="absolute translate-7 opacity-70 hover:opacity-100
+                    w-8 h-8 flex items-center justify-center text-foreground hover:text-yellow-500
+                    bg-background rounded-full border transition-colors duration-300"
 					onClick={(e) =>
 						onQuickTimeSwitchClick({
 							index: 2,
@@ -64,9 +64,9 @@ export function ClockHandleTools({ onQuickTimeSwitchClick }: Props) {
 
 				<button
 					type="button"
-					class="absolute -translate-x-7 translate-y-7 opacity-40 hover:opacity-100
-                    w-8 h-8 flex items-center justify-center text-gray-500 hover:text-purple-500
-                    bg-white/40 rounded-full border transition-colors duration-300"
+					class="absolute -translate-x-7 translate-y-7 opacity-70 hover:opacity-100
+                    w-8 h-8 flex items-center justify-center text-foreground hover:text-purple-500
+                    bg-background rounded-full border transition-colors duration-300"
 					onClick={(e) =>
 						onQuickTimeSwitchClick({
 							index: 3,
@@ -80,9 +80,9 @@ export function ClockHandleTools({ onQuickTimeSwitchClick }: Props) {
 
 				<button
 					type="button"
-					class="absolute -translate-7 opacity-40 hover:opacity-100
-                    w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-800
-                    bg-white/40 rounded-full border transition-colors duration-300"
+					class="absolute -translate-7 opacity-70 hover:opacity-100
+                    w-8 h-8 flex items-center justify-center text-foreground hover:text-gray-800
+                    bg-background rounded-full border transition-colors duration-300"
 					onClick={(e) =>
 						onQuickTimeSwitchClick({
 							index: 0,

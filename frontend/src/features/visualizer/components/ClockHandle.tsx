@@ -172,8 +172,9 @@ export function ClockHandle({
 						width: `${HANDLE_BUTTON_SIZE_PX}px`,
 						height: `${HANDLE_BUTTON_SIZE_PX}px`,
 					}}
+					// Handle
 					class={cn(
-						"absolute flex justify-center items-center bg-slate-800/20 rounded-full  -left-2.75",
+						"absolute flex justify-center items-center bg-accent/60 rounded-full  -left-2.75",
 						{
 							"cursor-grab": variant === "full",
 						},
@@ -181,7 +182,8 @@ export function ClockHandle({
 				>
 					<div
 						class={cn({
-							"relative bg-slate-800 h-1 w-1 rounded-full": variant === "full",
+							"relative bg-background/70 h-1 w-1 rounded-full":
+								variant === "full",
 						})}
 					>
 						{/* <AnimatePresence> */}
@@ -198,7 +200,7 @@ export function ClockHandle({
 									"transform-origin": "center center",
 								}}
 							>
-								<span class="whitespace-nowrap text-xs text-muted-foreground font-medium">
+								<span class="whitespace-nowrap text-xs text-foreground/80 font-medium">
 									{time()}
 								</span>
 							</div>
@@ -206,8 +208,10 @@ export function ClockHandle({
 						{/* </AnimatePresence> */}
 					</div>
 				</div>
+
+				{/* Diameter line */}
 				<div
-					class={cn("border-slate-800/40 border h-[50%] w-[50%]", {
+					class={cn("border-foreground/50 border h-[50%] w-[50%]", {
 						"border-dotted w-full": variant === "full",
 					})}
 				/>
