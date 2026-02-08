@@ -59,11 +59,7 @@ A tool that helps you to manage yours todos more naturally, by visualizing them 
 
 ## Roadmap
 
-- [ ] Visualization of todos on clock-graph
-- [ ] Todo CRUD
-- [ ] Responsive design works on desktop and mobile
-- [ ] Persisted state using local storage
-
+(See wiki)[https://github.com/thebeddev-code/Schejzuren]
 
 ## Getting Started
 
