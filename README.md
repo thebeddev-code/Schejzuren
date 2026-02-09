@@ -9,14 +9,14 @@
 </div>
 
 <h1 align="center">Schejzuren</h1>
-<p align="center"> A productivity app that makes aims to make management of your time more productive. </p>
+<p align="center"> A productivity app that aims to make the management of your time more productive and enjoyable. </p>
 <div align="center">
     <img src="https://github.com/thebeddev-code/todo-clock/blob/main/public/appbanner.png" />  
 </div>
 <p align="center">
   <br />
   <br />
-  <a href="https://github.com/thebeddev-code/todo-clock">View Demo</a>
+  <a href="https://github.com/thebeddev-code/todo-clock">No demo yet (will be soon!)</a>
   &middot;
   <a href="https://github.com/thebeddev-code/todo-clock/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
   &middot;
@@ -50,7 +50,7 @@
 
 ## About The Project
 
-A tool that helps you to manage yours todos more naturally, by visualizing them on a clock, instead of presenting them as a linear list of things.
+A tool that aims to make the management of your daily activities(todos), more natural by visualizing them on a clock instead of list.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
