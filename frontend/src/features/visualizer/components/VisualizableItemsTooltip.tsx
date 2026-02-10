@@ -58,8 +58,10 @@ export function VisualizableItemsTooltip({
 
 		// Find the item under the cursor based on angular position
 		const hoveredItem = filtered.find(({ startTimeHours, endTimeHours }) => {
-			const sDeg = calcDegreesFrom(startTimeHours, "hours") % 360;
-			const eDeg = calcDegreesFrom(endTimeHours, "hours") % 360;
+			const sDeg =
+				calcDegreesFrom(Math.max(startHours, startTimeHours), "hours") % 360;
+			const eDeg =
+				calcDegreesFrom(Math.min(endHours, endTimeHours), "hours") % 360;
 
 			// Handle cases where arc crosses 0° (e.g., 350° to 10°)
 			if (sDeg > eDeg) {
@@ -90,7 +92,7 @@ export function VisualizableItemsTooltip({
 			{/* Tooltip element */}
 			<span
 				class={cn(
-					"absolute z-50 bg-accent text-foreground transition-transform duration-200 ease-in-out",
+					"absolute z-50 bg-accent text-foreground transition-transform duration-300 ease-in-out",
 					{ "opacity-0 scale-0": !tooltipPos() },
 				)}
 				style={{
