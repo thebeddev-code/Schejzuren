@@ -1,8 +1,8 @@
 import { services } from "~/go/models";
 
-export type Todo = services.Todo;
+export type Activity = services.Activity;
 
-// export type Todo = {
+// export type Activity = {
 //   id: number,
 //   title: string;
 //   description: string;

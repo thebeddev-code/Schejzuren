@@ -1,6 +1,6 @@
 export namespace services {
 	
-	export class Todo {
+	export class Activity {
 	    id: number;
 	    title: string;
 	    description?: string;
@@ -17,7 +17,7 @@ export namespace services {
 	    recurrenceRule?: string;
 	
 	    static createFrom(source: any = {}) {
-	        return new Todo(source);
+	        return new Activity(source);
 	    }
 	
 	    constructor(source: any = {}) {

@@ -10,15 +10,15 @@ import z from "zod";
 import { TagsField } from "~/lib/components/ui/form/tags-field";
 import { toast } from "~/lib/components/ui/toast/toast";
 import {
-	type CreateTodoPayload,
-	todoPayloadSchema,
-} from "~/lib/schemas/todo.schema";
-import type { BlurEvent, Todo } from "~/lib/types";
+	activityPayloadSchema,
+	type CreateActivityPayload,
+} from "~/lib/schemas/activity.schema";
+import type { Activity, BlurEvent } from "~/lib/types";
 import { trimAndLowercase } from "~/lib/utils/strings";
-import { createTodo } from "../api/createTodo";
-import { updateTodoMutation } from "../api/updateTodoMutation";
+import { createActivity } from "../api/createActivity";
+import { updateActivityMutation } from "../api/updateActivityMutation";
 import { DEFAULT_TAGS, WEEKDAYS } from "../lib/constants";
-import { closeTodoForm, todoFormStore } from "./todoFormStore";
+import { activityFormStore, closeActivityForm } from "./activityFormStore";
 
 /*
  * TODO: Sync starts at and due fields when setting starts at field
@@ -27,18 +27,18 @@ import { closeTodoForm, todoFormStore } from "./todoFormStore";
  *
  * */
 
-type FormData = CreateTodoPayload & {
+type FormData = CreateActivityPayload & {
 	monthlyDate: string;
 };
 
 // NOTE: Not the best form and a lot can be improved but it gets the job done
-export function TodoForm() {
+export function ActivityForm() {
 	const [formData, setFormData] = createStore<FormData>(
-		todoFormStore.todoData as FormData,
+		activityFormStore.activityData as FormData,
 	);
-	const [formErrors, setFormErrors] = createStore<Partial<Todo>>({});
+	const [formErrors, setFormErrors] = createStore<Partial<Activity>>({});
 	const [formTouched, setFormTouched] = createStore<
-		Partial<Record<keyof Todo, boolean>>
+		Partial<Record<keyof Activity, boolean>>
 	>({});
 
 	function createFieldChangeHandler<Key extends keyof FormData>(
@@ -127,7 +127,7 @@ export function TodoForm() {
 		const formData = unwrap(getFormData());
 		const formTouched = unwrap(getFormTouched());
 
-		const { error } = todoPayloadSchema.safeParse(formData);
+		const { error } = activityPayloadSchema.safeParse(formData);
 		const formErrorMessages: Record<string, string> = {};
 		// Only process fields that have been touched
 		const fields = Object.keys(formTouched);
@@ -145,17 +145,17 @@ export function TodoForm() {
 		e.preventDefault();
 
 		const data = unwrap(formData);
-		const { success, error } = todoPayloadSchema.safeParse(data);
+		const { success, error } = activityPayloadSchema.safeParse(data);
 		if (!success) {
 			console.log(error);
 			return;
 		}
 
 		try {
-			if (todoFormStore.formType === "create") {
+			if (activityFormStore.formType === "create") {
 				toast.promise(
-					createTodo({
-						body: data as unknown as Todo,
+					createActivity({
+						body: data as unknown as Activity,
 					}),
 					{
 						loading: "Creating activity",
@@ -164,12 +164,12 @@ export function TodoForm() {
 					},
 				);
 			}
-			if (todoFormStore.formType === "update") {
-				z.number().parse(todoFormStore.todoData?.id);
+			if (activityFormStore.formType === "update") {
+				z.number().parse(activityFormStore.activityData?.id);
 				toast.promise(
-					updateTodoMutation({
-						id: todoFormStore.todoData?.id as number,
-						body: data as unknown as Todo,
+					updateActivityMutation({
+						id: activityFormStore.activityData?.id as number,
+						body: data as unknown as Activity,
 					}),
 					{
 						loading: "Updating activity",
@@ -181,7 +181,7 @@ export function TodoForm() {
 		} catch (err) {
 			console.error(err);
 		} finally {
-			closeTodoForm();
+			closeActivityForm();
 		}
 	}
 
@@ -194,7 +194,7 @@ export function TodoForm() {
 			<header>
 				<h2 class="text-xl font-bold text-foreground">Create New Task</h2>
 				<p class="text-sm text-foreground/80">
-					Fill out the details below to organize your todo.
+					Fill out the details below to organize your activity.
 				</p>
 			</header>
 
@@ -269,7 +269,7 @@ export function TodoForm() {
 				</TextField>
 			</div>
 
-			{/* TODO: Render on todo update  */}
+			{/* TODO: Render on activity update  */}
 			<Show when={false}>
 				<Select
 					options={["pending", "in-progress", "completed"]}
@@ -406,7 +406,7 @@ export function TodoForm() {
 				class="mt-4  text-foreground bg-background border border-border hover:bg-(--accent-hover) hover:text-background 
 				font-semibold py-2 px-4 rounded-md transition-colors hover:shadow-sm active:scale-[0.98]"
 			>
-				{todoFormStore.formType === "update" ? "Update" : "Create"}
+				{activityFormStore.formType === "update" ? "Update" : "Create"}
 			</button>
 		</form>
 	);

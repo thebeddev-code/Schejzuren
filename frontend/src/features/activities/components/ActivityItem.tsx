@@ -1,38 +1,39 @@
 import { format } from "date-fns";
 import { X as Close, SquarePen } from "lucide-solid";
 import { Button } from "~/lib/components/ui/button";
-import type { ClickEvent, Todo } from "~/lib/types";
-import { completeTodoMutation } from "../api/completeTodoMutation";
-import { deleteTodoMutation } from "../api/deleteTodoMutation";
-import { openTodoForm } from "./todoFormStore";
+import type { Activity, ClickEvent } from "~/lib/types";
+import { completeActivityMutation } from "../api/completeActivityMutation";
+import { deleteActivityMutation } from "../api/deleteActivityMutation";
+import { openActivityForm } from "./activityFormStore";
 
 type Props = {
-	todo: Todo;
+	activity: Activity;
 };
-export function TodoItem({ todo }: Props) {
-	function handleEditTodo() {
-		openTodoForm("update", todo);
+export function ActivityItem({ activity }: Props) {
+	function handleEditActivity() {
+		openActivityForm("update", activity);
 	}
-	function handleCompleteTodo() {
-		if (todo.status === "completed") {
-			completeTodoMutation({
-				id: todo.id,
+	function handleCompleteActivity() {
+		if (activity.status === "completed") {
+			completeActivityMutation({
+				id: activity.id,
 				completedAt: "",
 				status: "pending",
 			});
 		} else {
-			completeTodoMutation({
-				id: todo.id,
+			completeActivityMutation({
+				id: activity.id,
 				completedAt: new Date().toISOString(),
 				status: "completed",
 			});
 		}
 	}
-	function handleDeleteTodo() {
-		deleteTodoMutation({ id: todo.id });
+	function handleDeleteActivity() {
+		deleteActivityMutation({ id: activity.id });
 	}
 
-	const { title, due, priority, status, isRecurring, startsAt, color } = todo;
+	const { title, due, priority, status, isRecurring, startsAt, color } =
+		activity;
 	const isCompleted = status === "completed";
 
 	return (
@@ -49,7 +50,7 @@ export function TodoItem({ todo }: Props) {
 					type="button"
 					onClick={(e) => {
 						e.stopPropagation();
-						handleCompleteTodo();
+						handleCompleteActivity();
 					}}
 					class={`flex h-4 w-4 items-center justify-center rounded border text-[10px] ${
 						isCompleted
@@ -96,26 +97,26 @@ export function TodoItem({ todo }: Props) {
 
 				<Button
 					variant="outline"
-					aria-label="Delete todo"
-					title="Delete todo"
+					aria-label="Delete activity"
+					title="Delete activity"
 					size={"icon"}
 					class="h-6 w-6 p-1 text-foreground border-border/50 shadow-none hover:bg-background hover:border-border hover:text-(--error) transition-colors"
 					onClick={(e: ClickEvent<HTMLButtonElement>) => {
 						e.stopPropagation();
-						handleDeleteTodo();
+						handleDeleteActivity();
 					}}
 				>
 					<Close size={16} />
 				</Button>
 				<Button
 					variant="outline"
-					aria-label="Edit todo"
-					title="Edit todo"
+					aria-label="Edit activity"
+					title="Edit activity"
 					size={"icon"}
 					class="h-6 w-6 p-1 text-foreground border-border/50 shadow-none hover:bg-background hover:border-border hover:text-accent transition-colors"
 					onClick={(e: ClickEvent<HTMLButtonElement>) => {
 						e.stopPropagation();
-						handleEditTodo();
+						handleEditActivity();
 					}}
 				>
 					<SquarePen />

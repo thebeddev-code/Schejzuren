@@ -16,8 +16,8 @@ const isoDateTime = z.iso.datetime({
 	message: "Date must ISO 8601 formatted (e.g., 2026-01-04).",
 });
 
-// Define the Todo schema
-export const todoPayloadSchema = z.object({
+// Define the Activity schema
+export const activityPayloadSchema = z.object({
 	title: z
 		.string({
 			error: "Title must be a string.",
@@ -63,4 +63,4 @@ export const todoPayloadSchema = z.object({
 		.optional(),
 });
 
-export type CreateTodoPayload = z.infer<typeof todoPayloadSchema>;
+export type CreateActivityPayload = z.infer<typeof activityPayloadSchema>;

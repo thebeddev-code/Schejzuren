@@ -126,7 +126,7 @@ export function ColorWheel({ config, degrees: currentDegrees }: Props) {
 							transform: `rotate(${-((currentDegrees() % 360) + 180)}deg)`,
 						}}
 					>
-						{icon()}
+						{/* {icon()} */}
 					</div>
 				</div>
 			</div>

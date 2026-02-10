@@ -33,7 +33,7 @@ func main() {
 		OnStartup:        app.startup,
 		Bind: []interface{}{
 			app,
-			app.TodoService,
+			app.ActivityService,
 		},
 	})
 	if err != nil {

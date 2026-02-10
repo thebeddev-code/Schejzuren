@@ -187,7 +187,7 @@ export function TagsField(props: Props) {
 					</Show>
 					{/* Tags input  */}
 					<TextField.Input
-						aria-label="Todo tags"
+						aria-label="Activity tags"
 						placeholder="Add tag..."
 						class="relative z-10 flex-1 px-2 py-1 rounded bg-transparent border-none focus:outline-none focus:ring-0 text-sm"
 						onBlur={props.onBlur}

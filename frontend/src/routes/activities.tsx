@@ -1,30 +1,33 @@
 import { createAsync } from "@solidjs/router";
 import { addDays, set } from "date-fns";
 import { createMemo, createSignal, Show } from "solid-js";
-import { getTodos } from "~/features/todos/api/getTodos";
-import { TodoFormDrawer } from "~/features/todos/components/TodoFormDrawer";
-import { TodoList } from "~/features/todos/components/TodoList";
+import { getActivities } from "~/features/activities/api/getActivities";
+import { ActivitiesList } from "~/features/activities/components/ActivitiesList";
+import { ActivityFormDrawer } from "~/features/activities/components/ActivityFormDrawer";
 import {
-	openTodoForm,
-	todoFormStore,
-} from "~/features/todos/components/todoFormStore";
+	activityFormStore,
+	openActivityForm,
+} from "~/features/activities/components/activityFormStore";
 import { DayVisualizer } from "~/features/visualizer/components/DayVisualizer";
 import type { VisualizableItem } from "~/features/visualizer/utils/types";
 
 export default function Dashboard() {
-	const todosQueryResult = createAsync(() => getTodos());
+	const activitiesQueryResult = createAsync(() => getActivities());
 	const [currentDate, setCurrentDate] = createSignal(new Date());
-	const todos = createMemo(() => todosQueryResult() ?? []);
+	const activities = createMemo(() => activitiesQueryResult() ?? []);
 
 	return (
 		<main class="w-full">
 			<main class="flex-1 h-dvh grid grid-cols-2">
-				{/* {status === "success" && todos && ( */}
-				<Show when={todosQueryResult()}>
+				{/* {status === "success" && activities && ( */}
+				<Show when={activitiesQueryResult()}>
 					<DayVisualizer
 						visualizableItems={createMemo(() => {
-							const t = todosQueryResult() ?? [];
-							return [...t, todoFormStore.todoData ?? {}] as VisualizableItem[];
+							const a = activitiesQueryResult() ?? [];
+							return [
+								...a,
+								activityFormStore.activityData ?? {},
+							] as VisualizableItem[];
 						})}
 						currentDate={currentDate}
 						onMoveDate={(days) => {
@@ -42,15 +45,15 @@ export default function Dashboard() {
 							}
 							setCurrentDate(addDays(date, days));
 						}}
-						onFormOpen={(todo) => {
-							openTodoForm("create", todo);
+						onFormOpen={(activity) => {
+							openActivityForm("create", activity);
 						}}
 					/>
-					<TodoList todos={todos} />
+					<ActivitiesList activities={activities} />
 				</Show>
 				{/* )} */}
-				{/* {status === "success" && todos && <TodoList todos={todos} />} */}
-				<TodoFormDrawer />
+				{/* {status === "success" && activities && <ActivityList activities={activities} />} */}
+				<ActivityFormDrawer />
 			</main>
 		</main>
 	);
