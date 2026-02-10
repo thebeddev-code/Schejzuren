@@ -1,15 +1,15 @@
 import createRouteMatcher from "@tscircuit/routematch";
-import * as todosController from "./controllers/todos.controller.ts";
+import * as activitiesController from "./controllers/activity.controller.ts";
 import { convertStringFieldsToNumbers } from "./utils/object.ts";
 
 export const routerConfig = {
-	"/todos": {
-		GET: todosController.getTodos,
-		POST: todosController.createTodo,
+	"/activities": {
+		GET: activitiesController.getActivities,
+		POST: activitiesController.createActivity,
 	},
-	"/todos/[id]": {
-		DELETE: todosController.deleteTodo,
-		PATCH: todosController.updateTodo,
+	"/activities/[id]": {
+		DELETE: activitiesController.deleteActivity,
+		PATCH: activitiesController.updateActivity,
 	},
 };
 

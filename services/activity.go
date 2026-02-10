@@ -13,7 +13,7 @@ type (
 )
 
 const (
-	StatusTodo       Status = "todo"
+	StatusActivity       Status = "todo"
 	StatusInProgress Status = "in_progress"
 	StatusDone       Status = "done"
 
@@ -22,7 +22,7 @@ const (
 	PriorityHigh   Priority = "high"
 )
 
-type Todo struct {
+type Activity struct {
 	ID             int      `json:"id" gorm:"primaryKey"`
 	Title          string   `json:"title"`
 	Description    *string  `json:"description"`
@@ -39,35 +39,35 @@ type Todo struct {
 	RecurrenceRule *string  `json:"recurrenceRule"`
 }
 
-type TodoService struct {
+type ActivityService struct {
 	db *gorm.DB
 }
 
-func NewTodoService(db *gorm.DB) *TodoService {
-	db.AutoMigrate(&Todo{})
-	return &TodoService{db: db}
+func NewActivityService(db *gorm.DB) *ActivityService {
+	db.AutoMigrate(&Activity{})
+	return &ActivityService{db: db}
 }
 
-func (s *TodoService) GetTodos() ([]Todo, error) {
-	var todos []Todo
+func (s *ActivityService) GetActivities() ([]Activity, error) {
+	var activities []Activity
 	weekday := time.Now().Weekday().String()
 	lowercaseWeekday := strings.ToLower(weekday)
-	result := s.db.Where("recurrence_rule LIKE ?", "%everyday%").Or("recurrence_rule LIKE ?", "%"+lowercaseWeekday+"%").Find(&todos)
-	return todos, result.Error
+	result := s.db.Where("recurrence_rule LIKE ?", "%everyday%").Or("recurrence_rule LIKE ?", "%"+lowercaseWeekday+"%").Find(&activities)
+	return activities, result.Error
 }
 
-func (s *TodoService) CreateTodo(todo Todo) error {
-	return s.db.Create(&todo).Error
+func (s *ActivityService) CreateActivity(activity Activity) error {
+	return s.db.Create(&activity).Error
 }
 
-func (s *TodoService) UpdateTodo(id int, updated Todo) error {
-	var todo Todo
-	if err := s.db.First(&todo, id).Error; err != nil {
+func (s *ActivityService) UpdateActivity(id int, updated Activity) error {
+	var activity Activity
+	if err := s.db.First(&activity, id).Error; err != nil {
 		return err
 	}
-	return s.db.Model(&todo).Updates(updated).Error
+	return s.db.Model(&activity).Updates(updated).Error
 }
 
-func (s *TodoService) DeleteTodo(id int) error {
-	return s.db.Delete(&Todo{}, id).Error
+func (s *ActivityService) DeleteActivity(id int) error {
+	return s.db.Delete(&Activity{}, id).Error
 }

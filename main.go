@@ -23,7 +23,7 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:  "myproject",
+		Title:  "Schejzuren",
 		Width:  1024,
 		Height: 768,
 		AssetServer: &assetserver.Options{
@@ -33,7 +33,7 @@ func main() {
 		OnStartup:        app.startup,
 		Bind: []interface{}{
 			app,
-			app.TodoService,
+			app.ActivityService,
 		},
 	})
 	if err != nil {

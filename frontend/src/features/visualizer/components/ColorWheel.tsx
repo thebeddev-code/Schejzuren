@@ -33,7 +33,7 @@ export function ColorWheel({ config, degrees: currentDegrees }: Props) {
 			degreesEnd: number,
 			offset: number,
 			color: string,
-			opacity: number = 0.9,
+			opacity: number = 0.1,
 		) => {
 			if (!ctx) return;
 
@@ -75,26 +75,27 @@ export function ColorWheel({ config, degrees: currentDegrees }: Props) {
 				degreesEnd = degreesEnd % 360;
 				if (degreesEnd === 0) degreesEnd += 360;
 
-				// the left half side (before the clock handle)
-				drawArc(degreesStart, currentDegrees(), 90, color);
-				// the right half side (after the clock handle)
-				drawArc(currentDegrees(), degreesEnd, 90, color);
+				drawArc(degreesStart, degreesEnd, 90, color);
+				// // the left half side (before the clock handle)
+				// drawArc(degreesStart, currentDegrees(), 90, color);
+				// // the right half side (after the clock handle)
+				// drawArc(currentDegrees(), degreesEnd, 90, color);
 
 				// The other halfs ... think of this as multicolor line segment
 				// the left half side (before the clock handle)
-				drawArc(
-					currentDegrees() - 180,
-					degreesStart,
-					90,
-					marks[i - 1]?.[1].color ?? marks.at(-1)?.[1].color,
-				);
-				// the right half side (after the clock handle)
-				drawArc(
-					degreesEnd,
-					(currentDegrees() + 180) % 360,
-					90,
-					marks[(i + 1) % marks.length]?.[1].color ?? "cyan",
-				);
+				// drawArc(
+				// 	currentDegrees() - 180,
+				// 	degreesStart,
+				// 	90,
+				// 	marks[i - 1]?.[1].color ?? marks.at(-1)?.[1].color,
+				// );
+				// // the right half side (after the clock handle)
+				// drawArc(
+				// 	degreesEnd,
+				// 	(currentDegrees() + 180) % 360,
+				// 	90,
+				// 	marks[(i + 1) % marks.length]?.[1].color ?? "cyan",
+				// );
 				// Very important
 				return;
 			}
@@ -111,7 +112,7 @@ export function ColorWheel({ config, degrees: currentDegrees }: Props) {
 	});
 
 	return (
-		<div class="left-0 top-0 translate-1/2 absolute h-50 w-50 rounded-full">
+		<div class="left-0 top-0 absolute h-full w-full p-10 rounded-full pointer-events-none">
 			<canvas ref={canvasRef} class="w-full h-full rounded-full" />
 			<div class="flex justify-center items-center left-0 top-0 absolute w-full h-full rounded-full">
 				<div
@@ -125,7 +126,7 @@ export function ColorWheel({ config, degrees: currentDegrees }: Props) {
 							transform: `rotate(${-((currentDegrees() % 360) + 180)}deg)`,
 						}}
 					>
-						{icon()}
+						{/* {icon()} */}
 					</div>
 				</div>
 			</div>

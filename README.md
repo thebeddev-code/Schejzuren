@@ -1,26 +1,26 @@
 <div align="center">
   
-![Contributors](https://img.shields.io/github/contributors/thebeddev-code/todo-clock?style=for-the-badge)
-![License](https://img.shields.io/github/license/thebeddev-code/todo-clock?style=for-the-badge)
-![GitHub stars](https://img.shields.io/github/stars/thebeddev-code/todo-clock?style=for-the-badge)
-![GitHub last commit](https://img.shields.io/github/last-commit/thebeddev-code/todo-clock?style=for-the-badge)
-![GitHub Issues](https://img.shields.io/github/issues/thebeddev-code/todo-clock?style=for-the-badge)
+![Contributors](https://img.shields.io/github/contributors/thebeddev-code/activity-clock?style=for-the-badge)
+![License](https://img.shields.io/github/license/thebeddev-code/activity-clock?style=for-the-badge)
+![GitHub stars](https://img.shields.io/github/stars/thebeddev-code/activity-clock?style=for-the-badge)
+![GitHub last commit](https://img.shields.io/github/last-commit/thebeddev-code/activity-clock?style=for-the-badge)
+![GitHub Issues](https://img.shields.io/github/issues/thebeddev-code/activity-clock?style=for-the-badge)
 
 </div>
 
 <h1 align="center">Schejzuren</h1>
 <p align="center"> A productivity app that aims to make the management of your time more productive and enjoyable. </p>
 <div align="center">
-    <img src="https://github.com/thebeddev-code/todo-clock/blob/main/public/appbanner.png" />  
+    <img src="https://github.com/thebeddev-code/activity-clock/blob/main/public/appbanner.png" />  
 </div>
 <p align="center">
   <br />
   <br />
   <a href="https://github.com/thebeddev-code/todo-clock">No demo yet (will be soon!)</a>
   &middot;
-  <a href="https://github.com/thebeddev-code/todo-clock/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+  <a href="https://github.com/thebeddev-code/activity-clock/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
   &middot;
-  <a href="https://github.com/thebeddev-code/todo-clock/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+  <a href="https://github.com/thebeddev-code/activity-clock/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
 </p>
 
 <details>
@@ -52,10 +52,8 @@
 
 A tool that aims to make the management of your daily activities(todos), more natural by visualizing them on a clock instead of list.
 
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
 
 ## Roadmap
 
@@ -76,17 +74,18 @@ If you intend to contribute or build from source, these are the steps that you w
 
 ```bash
 # Clone the repository
-git clone https://github.com/thebeddev-code/todo-clock.git
-cd todo-clock
+git clone https://github.com/thebeddev-code/activity-clock.git
+cd activity-clock
 
 # Install dependencies (choose your package manager)
 pnpm install
 ```
+
 ### Build
 
 ```bash
 # Start the app
-pnpm dev 
+pnpm dev
 ```
 
 ## Contributing
@@ -101,11 +100,10 @@ pnpm dev
 
 This project is licensed under the **GPL License**. See `LICENSE` for details.
 
-
 ### Top contributors:
 
-<a href="https://github.com/thebeddev-code/todo-clock/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=thebeddev-code/todo-clock" alt="contrib.rocks image" />
+<a href="https://github.com/thebeddev-code/activity-clock/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=thebeddev-code/activity-clock" alt="contrib.rocks image" />
 </a>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

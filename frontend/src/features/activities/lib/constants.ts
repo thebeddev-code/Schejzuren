@@ -1,7 +1,7 @@
-export const TODO_QUERY_KEYS = {
-	todos: "/todos",
-	todo(todoId: number) {
-		return `${this.todos}/${todoId}`;
+export const ACTIVITY_QUERY_KEYS = {
+	activities: "/activities",
+	activity(activityId: number) {
+		return `${this.activities}/${activityId}`;
 	},
 };
 

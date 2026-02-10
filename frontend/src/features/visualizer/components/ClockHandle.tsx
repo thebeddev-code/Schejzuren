@@ -1,11 +1,4 @@
 import { addHours, formatDate, set } from "date-fns";
-
-import { DEGREES_PER_HOUR } from "../utils/constants";
-import { cn } from "~/lib/utils";
-import { getCurrentTimeInDegrees, getMouseAngleInDegrees } from "../utils/math";
-
-import { ClockHandleTools } from "./ClockHandleTools";
-import type { ClickEvent } from "~/lib/types";
 import {
 	type Accessor,
 	createEffect,
@@ -13,8 +6,14 @@ import {
 	createSignal,
 	type JSXElement,
 } from "solid-js";
+import type { ClickEvent } from "~/lib/types";
+import { cn } from "~/lib/utils";
+import { DEGREES_PER_HOUR } from "../utils/constants";
+import { getCurrentTimeInDegrees, getMouseAngleInDegrees } from "../utils/math";
+import { ClockHandleTools } from "./ClockHandleTools";
 
 const HANDLE_BUTTON_SIZE_PX = 21;
+const ROTATION_ANIMATION_SPEED_MS = 700;
 
 export type AngleValue = {
 	currentAngle: number;
@@ -66,6 +65,7 @@ export function ClockHandle({
 	// Handle resetting the last raw angle after clock handle reset
 
 	let lastRawAngle: number | null = null;
+	let handleRef: HTMLDivElement | undefined;
 	const handleMouseMove = (e: ClickEvent<HTMLDivElement>) => {
 		if (!mouseDown()) return;
 
@@ -95,10 +95,12 @@ export function ClockHandle({
 	createEffect(() => {
 		const intervalId = setInterval(() => {
 			if (mouseDown() || hasUsedQuickSwitch) return;
-			onChange(DEGREES_PER_HOUR / 3600);
+			// onChange(DEGREES_PER_HOUR / 3600);
 		}, 1000);
 		return () => clearInterval(intervalId);
 	});
+
+	let timerId: number | null = null;
 	function handleQuickTimeSwitchClick({
 		index = 1,
 		event,
@@ -109,8 +111,27 @@ export function ClockHandle({
 		resetClockHandle?: boolean;
 	}) {
 		event.stopPropagation();
+
+		const currentTimeDegrees = getCurrentTimeInDegrees();
+		const newTotalAngle = resetClockHandle ? currentTimeDegrees : 180 * index;
+		const offset = DEGREES_PER_HOUR * (1 / 60 / 60);
+
+		// This is used to control the animation rotation speed.
+		// If next jump degrees close move fast or if far move slow
+		const multiplier = Math.abs((value().totalAngle - newTotalAngle) / 360);
+
+		if (timerId) clearTimeout(timerId);
+		if (handleRef) {
+			handleRef.style.transitionDuration = `${multiplier * ROTATION_ANIMATION_SPEED_MS}ms`;
+			// Reset the duration, so that if user were to drag the handle
+			// No transition would apply
+			timerId = setTimeout(() => {
+				handleRef.style.transitionDuration = "0ms";
+			}, ROTATION_ANIMATION_SPEED_MS);
+		}
+
+		// Reset the clock handle rotation to current time
 		if (resetClockHandle) {
-			const currentTimeDegrees = getCurrentTimeInDegrees();
 			resetValue?.({
 				currentAngle: currentTimeDegrees % 360,
 				totalAngle: currentTimeDegrees,
@@ -120,22 +141,19 @@ export function ClockHandle({
 			hasUsedQuickSwitch = false;
 			return;
 		}
-		// So, we know that conversion rate of degrees to hours is 30 degrees because {360 / 12 = 30}
-		const angle = 180 * index;
 
+		// rotateBy(finishingRotationDegrees)
 		// Small offset to correctly calculate part of the day
-		const offset = DEGREES_PER_HOUR * (1 / 60 / 60);
 		resetValue?.({
-			currentAngle: angle % 360,
-			totalAngle: angle + offset,
+			currentAngle: newTotalAngle % 360,
+			totalAngle: newTotalAngle + offset,
 		});
-
 		// Do not increase the clock handle angle with time passage
 		hasUsedQuickSwitch = true;
 	}
 
 	const displayAngle = () =>
-		controlled ? value().currentAngle : handleDegrees().total;
+		controlled ? value().totalAngle : handleDegrees().total;
 	const clockHandleStyles = createMemo(() => ({
 		transform: `rotate(${displayAngle() + 90}deg)`,
 		"transform-origin": "50% 50%",
@@ -143,6 +161,8 @@ export function ClockHandle({
 	}));
 
 	return (
+		// biome-ignore lint/a11y/noStaticElementInteractions: Clock handle must be interactive to adjust the visible activies time window
+		// biome-ignore lint/a11y/useKeyWithClickEvents: This isn't supposed to be interacted with keys
 		<div
 			class={cn(
 				"relative flex justify-center items-center",
@@ -156,10 +176,18 @@ export function ClockHandle({
 			}}
 			onMouseMove={handleMouseMove}
 		>
+			{/* ===== Handle ===== */}
+			{/* biome-ignore lint/a11y/noStaticElementInteractions: Clock handle must be interactive to adjust the visible activies time window */}
+			{/* biome-ignore lint/a11y/useKeyWithClickEvents: This isn't supposed to be interacted with keys */}
 			<div
+				ref={handleRef}
 				style={clockHandleStyles()}
-				class={cn("z-10 absolute flex justify-start items-center")}
+				class={cn(
+					"z-10 absolute flex justify-start items-center transition-transform duration-0",
+				)}
 			>
+				{/* biome-ignore lint/a11y/noStaticElementInteractions: Clock handle must be interactive to adjust the visible activies time window */}
+				{/* biome-ignore lint/a11y/useKeyWithClickEvents: This isn't supposed to be interacted with keys */}
 				<div
 					onMouseDown={() => setMouseDown(true)}
 					onMouseEnter={() => setMouseEnter(true)}
@@ -168,8 +196,9 @@ export function ClockHandle({
 						width: `${HANDLE_BUTTON_SIZE_PX}px`,
 						height: `${HANDLE_BUTTON_SIZE_PX}px`,
 					}}
+					// Handle
 					class={cn(
-						"absolute flex justify-center items-center bg-slate-800/20 rounded-full  -left-2.75",
+						"absolute flex justify-center items-center bg-accent/60 rounded-full  -left-2.75",
 						{
 							"cursor-grab": variant === "full",
 						},
@@ -177,7 +206,8 @@ export function ClockHandle({
 				>
 					<div
 						class={cn({
-							"relative bg-slate-800 h-1 w-1 rounded-full": variant === "full",
+							"relative bg-background/70 h-1 w-1 rounded-full":
+								variant === "full",
 						})}
 					>
 						{/* <AnimatePresence> */}
@@ -194,7 +224,7 @@ export function ClockHandle({
 									"transform-origin": "center center",
 								}}
 							>
-								<span class="whitespace-nowrap text-xs text-muted-foreground font-medium">
+								<span class="whitespace-nowrap text-xs text-foreground/80 font-medium">
 									{time()}
 								</span>
 							</div>
@@ -202,8 +232,10 @@ export function ClockHandle({
 						{/* </AnimatePresence> */}
 					</div>
 				</div>
+
+				{/* Diameter line */}
 				<div
-					class={cn("border-slate-800/40 border h-[50%] w-[50%]", {
+					class={cn("border-foreground/50 border h-[50%] w-[50%]", {
 						"border-dotted w-full": variant === "full",
 					})}
 				/>
