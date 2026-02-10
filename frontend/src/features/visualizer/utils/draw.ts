@@ -1,4 +1,5 @@
 import { differenceInCalendarDays } from "date-fns";
+import { VISUALIZABLE_ARC_WIDTH } from "./constants.ts";
 import { calcDegreesFrom, calcRadiansFrom } from "./math.ts";
 import type { Drawable, VisualizableItem } from "./types";
 
@@ -80,7 +81,7 @@ export function drawDrawableItems({
 		);
 		ctx.strokeStyle = color;
 		ctx.fillStyle = color;
-		ctx.lineWidth = 40;
+		ctx.lineWidth = VISUALIZABLE_ARC_WIDTH;
 		ctx.stroke();
 	};
 
