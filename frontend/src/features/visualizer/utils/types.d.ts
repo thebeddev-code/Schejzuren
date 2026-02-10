@@ -7,3 +7,8 @@ export type Drawable = {
 	endTimeHours: number;
 	color: string;
 };
+
+export type Vector2 = {
+	x: number;
+	y: number;
+};
