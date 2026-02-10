@@ -1,5 +1,6 @@
 import type { ClickEvent } from "~/lib/types";
 import { DEGREES_PER_HOUR } from "./constants";
+
 export function calcRadiansFrom(
 	value: number,
 	type: "hours" | "degrees" = "degrees",
@@ -19,13 +20,28 @@ export function calcDegreesFrom(
 	return (value * 180) / Math.PI;
 }
 
+export function getElementCenter(e: HTMLDivElement) {
+	const rect = e.getBoundingClientRect();
+	const x = rect.left + rect.width / 2;
+	const y = rect.top + rect.height / 2;
+	return {
+		x,
+		y,
+	};
+}
+
+export function getMousePosition(e: ClickEvent<HTMLDivElement>) {
+	const x = e.clientX - getElementCenter(e.currentTarget).x;
+	const y = e.clientY - getElementCenter(e.currentTarget).y;
+	return {
+		x,
+		y,
+	};
+}
+
 export function getMouseAngleInDegrees(e: ClickEvent<HTMLDivElement>) {
-	const rect = e.currentTarget.getBoundingClientRect();
-	const centerX = rect.left + rect.width / 2;
-	const centerY = rect.top + rect.height / 2;
-	const dx = e.clientX - centerX;
-	const dy = e.clientY - centerY;
-	const angleRadians = Math.atan2(dx, -dy);
+	const { x, y } = getMousePosition(e);
+	const angleRadians = Math.atan2(x, -y);
 	let angle = calcDegreesFrom(angleRadians, "radians");
 	if (angle < 0) angle += 360;
 	return angle;
