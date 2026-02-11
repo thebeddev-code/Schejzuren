@@ -11,7 +11,7 @@
 <h1 align="center">Schejzuren</h1>
 <p align="center"> A productivity app that aims to make the management of your time more productive and enjoyable. </p>
 <div align="center">
-    <img src="https://github.com/thebeddev-code/Schejzuren/blob/main/public/appbanner.png" />  
+    <img src="https://github.com/thebeddev-code/Schejzuren/blob/main/public/app-banner.webp" />  
 </div>
 <p align="center">
   <br />
