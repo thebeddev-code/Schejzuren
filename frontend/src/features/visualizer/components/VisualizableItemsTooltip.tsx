@@ -1,7 +1,14 @@
-import { type Accessor, createSignal, type ParentProps } from "solid-js";
+import {
+	type Accessor,
+	createMemo,
+	createSignal,
+	type ParentProps,
+} from "solid-js";
 import type { ClickEventType } from "~/lib/types";
 import { cn } from "~/lib/utils/cn";
+import { shortenString } from "~/lib/utils/strings";
 import { DEGREES_PER_HOUR } from "../utils/constants";
+import { formatTimeToAmPm } from "../utils/date";
 import {
 	calcDegreesFrom,
 	getMouseAngleInDegrees,
@@ -11,16 +18,20 @@ import type { Drawable, Vector2 } from "../utils/types";
 
 interface Props {
 	handleDegrees: Accessor<number>;
-	drawableItems: Drawable[];
+	drawableItems: Accessor<Drawable[]>;
 	visualizableArcWidth: number;
+	shouldHideTooltip?: Accessor<boolean>;
 }
+
 export function VisualizableItemsTooltip({
 	handleDegrees,
 	drawableItems,
 	children,
 	visualizableArcWidth,
+	shouldHideTooltip,
 }: Props & ParentProps) {
 	const [tooltipPos, setTooltipPos] = createSignal<Vector2 | null>(null);
+	const [hoveredItem, setHoveredItem] = createSignal<Drawable | null>(null);
 	let containerRef: HTMLDivElement | undefined;
 
 	function handleMouseMove(e: ClickEventType) {
@@ -50,26 +61,28 @@ export function VisualizableItemsTooltip({
 		const endHours = (handleDegrees() + 180) / DEGREES_PER_HOUR;
 
 		// Filter items that overlap with the currently visible items
-		const filtered = drawableItems.filter(
-			({ startTimeHours, endTimeHours }) => {
+		const filtered = drawableItems().filter(
+			({ startTimeHours, endTimeHours, id }) => {
 				return !(endTimeHours <= startHours || startTimeHours >= endHours);
 			},
 		);
 
 		// Find the item under the cursor based on angular position
-		const hoveredItem = filtered.find(({ startTimeHours, endTimeHours }) => {
-			const sDeg =
-				calcDegreesFrom(Math.max(startHours, startTimeHours), "hours") % 360;
-			const eDeg =
-				calcDegreesFrom(Math.min(endHours, endTimeHours), "hours") % 360;
+		const hoveredItem = filtered.find(
+			({ startTimeHours, endTimeHours, id }) => {
+				const sDeg =
+					calcDegreesFrom(Math.max(startHours, startTimeHours), "hours") % 360;
+				const eDeg =
+					calcDegreesFrom(Math.min(endHours, endTimeHours), "hours") % 360;
 
-			// Handle cases where arc crosses 0° (e.g., 350° to 10°)
-			if (sDeg > eDeg) {
-				return mouseDegrees >= sDeg || mouseDegrees <= eDeg;
-			}
-			// Normal case: check if mouse angle is within [start, end]
-			return mouseDegrees >= sDeg && mouseDegrees <= eDeg;
-		});
+				// Handle cases where arc crosses 0° (e.g., 350° to 10°)
+				if (sDeg > eDeg) {
+					return mouseDegrees >= sDeg || mouseDegrees <= eDeg;
+				}
+				// Normal case: check if mouse angle is within [start, end]
+				return mouseDegrees >= sDeg && mouseDegrees <= eDeg;
+			},
+		);
 
 		// Hide tooltip if no item is hovered
 		if (!hoveredItem) return setTooltipPos(null);
@@ -79,8 +92,10 @@ export function VisualizableItemsTooltip({
 			x: mousePos.x + rect.width / 2 + 20,
 			y: mousePos.y + rect.height / 2 + 20,
 		});
+		setHoveredItem(hoveredItem);
 	}
 
+	const hideTooltip = createMemo(() => shouldHideTooltip || !tooltipPos());
 	return (
 		<div
 			class="relative"
@@ -92,15 +107,27 @@ export function VisualizableItemsTooltip({
 			{/* Tooltip element */}
 			<span
 				class={cn(
-					"absolute z-50 bg-accent text-foreground transition-transform duration-300 ease-in-out",
-					{ "opacity-0 scale-0": !tooltipPos() },
+					"absolute z-50 h-min w-40 bg-accent/50 rounded-sm text-background backdrop-blur-md p-3 shadow-lg",
+					"transition-transform duration-300 ease-in-out",
+					{ "opacity-0 scale-0": hideTooltip() },
 				)}
 				style={{
 					top: `${tooltipPos()?.y}px`,
 					left: `${tooltipPos()?.x}px`,
 				}}
 			>
-				Tooltip
+				<p class="font-semibold">
+					{shortenString(hoveredItem()?.title ?? "", 16)}
+				</p>
+				<span class="text-[0.7rem]">
+					<span class="mr-1">
+						{formatTimeToAmPm(hoveredItem()?.startTimeHours ?? 0)}
+					</span>
+					-
+					<span class="ml-1">
+						{formatTimeToAmPm(hoveredItem()?.endTimeHours ?? 0)}
+					</span>
+				</span>
 			</span>
 			{children}
 		</div>
