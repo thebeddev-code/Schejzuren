@@ -1,6 +1,6 @@
 import { differenceInCalendarDays } from "date-fns";
 import { VISUALIZABLE_ARC_WIDTH } from "./constants.ts";
-import { calcDegreesFrom, calcRadiansFrom } from "./math.ts";
+import { calcDegreesFrom, calcRadiansFrom, clamp } from "./math.ts";
 import type { Drawable, VisualizableItem } from "./types";
 
 export function visualizableToDrawable({
@@ -10,35 +10,44 @@ export function visualizableToDrawable({
 	visualizableItems: VisualizableItem[];
 	now?: Date;
 }): Drawable[] {
-	return visualizableItems
-		.filter((v) => v.startsAt && v.due)
-		.map((v) => {
-			const startsAt = new Date(v.startsAt as string);
-			const endsAt = new Date(v.due as string);
-			// Converting the time to hour
-			// Since 1 hours is 60 minutes, we divide by 60
-			// Same for seconds
-			// FIXME: Broken offsetting. Needs fixing
-			let startTime =
-				startsAt.getHours() +
-				startsAt.getMinutes() / 60 +
-				startsAt.getSeconds() / 3600;
-			startTime += 24 * differenceInCalendarDays(startsAt, now);
+	return (
+		visualizableItems
 
-			let endTime =
-				endsAt.getHours() +
-				endsAt.getMinutes() / 60 +
-				endsAt.getSeconds() / 3600;
-			// In item spans today and the next day
-			endTime += 24 * differenceInCalendarDays(endsAt, now);
+			// Filter all visualizable items
+			.filter((v) => v.startsAt && v.due)
+			.map((v) => {
+				// Convert strings to dates
+				const startsAt = new Date(v.startsAt as string);
+				const endsAt = new Date(v.due as string);
 
-			return {
-				...v,
-				startTimeHours: startTime,
-				endTimeHours: endTime,
-				color: v.color ?? "black",
-			};
-		});
+				// Convert start date to hours
+				let startTimeHours =
+					startsAt.getHours() +
+					startsAt.getMinutes() / 60 +
+					startsAt.getSeconds() / 3600;
+
+				// Offset start time hours, in case item spans within the next or previous day
+				startTimeHours +=
+					24 * clamp(differenceInCalendarDays(startsAt, now), -1, 1);
+
+				// Convert end date to hours
+				let endTimeHours =
+					endsAt.getHours() +
+					endsAt.getMinutes() / 60 +
+					endsAt.getSeconds() / 3600;
+
+				// Offset end time hours, in case item spans within the next or previous day
+				endTimeHours +=
+					24 * clamp(differenceInCalendarDays(endsAt, now), -1, 1);
+
+				return {
+					...v,
+					startTimeHours,
+					endTimeHours,
+					color: v.color ?? "black",
+				};
+			})
+	);
 }
 
 interface DrawDrawableItems {
