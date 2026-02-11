@@ -91,11 +91,12 @@ export function ClockHandle({
 		}
 		onChange?.(delta, newTotal);
 	};
+
 	let hasUsedQuickSwitch = false;
 	createEffect(() => {
 		const intervalId = setInterval(() => {
 			if (mouseDown() || hasUsedQuickSwitch) return;
-			// onChange(DEGREES_PER_HOUR / 3600);
+			onChange(DEGREES_PER_HOUR / 3600);
 		}, 1000);
 		return () => clearInterval(intervalId);
 	});
