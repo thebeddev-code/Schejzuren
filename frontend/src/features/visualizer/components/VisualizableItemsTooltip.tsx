@@ -95,7 +95,7 @@ export function VisualizableItemsTooltip({
 		setHoveredItem(hoveredItem);
 	}
 
-	const hideTooltip = createMemo(() => shouldHideTooltip || !tooltipPos());
+	const hideTooltip = createMemo(() => shouldHideTooltip?.() || !tooltipPos());
 	return (
 		<div
 			class="relative"
