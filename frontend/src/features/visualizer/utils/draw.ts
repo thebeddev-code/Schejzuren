@@ -33,6 +33,7 @@ export function visualizableToDrawable({
 			endTime += 24 * differenceInCalendarDays(endsAt, now);
 
 			return {
+				...v,
 				startTimeHours: startTime,
 				endTimeHours: endTime,
 				color: v.color ?? "black",
