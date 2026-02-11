@@ -64,3 +64,7 @@ export function getCurrentTimeInDegrees(overrideDate = new Date()) {
 export function snapToStep(val: number, step: number) {
 	return Math.round(val / step) * step;
 }
+
+export function clamp(val: number, min: number, max: number) {
+	return Math.min(Math.max(val, min), max);
+}
