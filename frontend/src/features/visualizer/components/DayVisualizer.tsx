@@ -8,7 +8,7 @@ import {
 	Show,
 } from "solid-js";
 import type { ClickEvent } from "~/lib/types";
-import { DEGREES_PER_HOUR } from "../utils/constants";
+import { DEGREES_PER_HOUR, VISUALIZABLE_ARC_WIDTH } from "../utils/constants";
 import { degreesToDate } from "../utils/date";
 import { calcClosestDistToClockHandle } from "../utils/distToClockHandle";
 import { drawDrawableItems, visualizableToDrawable } from "../utils/draw";
@@ -21,6 +21,7 @@ import type { VisualizableItem } from "../utils/types";
 import { Clock } from "./Clock";
 import { ClockHandle } from "./ClockHandle";
 import { ColorWheel } from "./ColorWheel";
+import { VisualizableItemsTooltip } from "./VisualizableItemsTooltip";
 
 const RADIUS = 170;
 const MAX_LAST_CLICK_DIFF_MS = 300;
@@ -67,6 +68,15 @@ export function DayVisualizer({
 		};
 	});
 
+	const drawableItems = createMemo(() => {
+		const copyVisualizableItems = [...visualizableItems()];
+		if (newVisualizableItem())
+			copyVisualizableItems.push(newVisualizableItem() as VisualizableItem);
+		return visualizableToDrawable({
+			visualizableItems: copyVisualizableItems,
+		});
+	});
+
 	createEffect(() => {
 		const canvas = canvasRef;
 		if (!canvas) {
@@ -86,15 +96,10 @@ export function DayVisualizer({
 		ctx.scale(dpr, dpr);
 
 		const viewHoursStart = clockHandleDegrees().totalAngle / DEGREES_PER_HOUR;
-		const copyVisualizableItems = [...visualizableItems()];
-		if (newVisualizableItem())
-			copyVisualizableItems.push(newVisualizableItem() as VisualizableItem);
-		const drawableItems = visualizableToDrawable({
-			visualizableItems: copyVisualizableItems,
-		});
+
 		drawDrawableItems({
 			canvas,
-			drawableItems,
+			drawableItems: drawableItems(),
 			radius: RADIUS,
 			viewHours: {
 				start: viewHoursStart - VIEW_HOURS,
@@ -202,57 +207,63 @@ export function DayVisualizer({
 					</button>
 				</div>
 
-				<ClockHandle
-					value={clockHandleDegrees}
-					onChange={(delta) => {
-						const { totalAngle } = clockHandleDegrees();
-						const newTotalAngle = totalAngle + delta;
-						// Move to the next day
-						if (newTotalAngle > MAX_TOTAL_DEGREES) {
-							handleMoveDateClick(1);
-							return;
-						}
-						// Move to the previous day
-						if (newTotalAngle < 0) {
-							handleMoveDateClick(-1);
-							return;
-						}
-						setClockHandleDegrees(({ currentAngle, totalAngle }) => ({
-							currentAngle: (currentAngle + delta) % 360,
-							totalAngle: totalAngle + delta,
-						}));
-					}}
-					resetValue={(v) => setClockHandleDegrees(v)}
-					clockGraphRadius={RADIUS}
+				<VisualizableItemsTooltip
+					handleDegrees={createMemo(() => clockHandleDegrees().totalAngle)}
+					drawableItems={drawableItems}
+					visualizableArcWidth={VISUALIZABLE_ARC_WIDTH}
+					shouldHideTooltip={createMemo(() => Boolean(newVisualizableItem()))}
 				>
-					<Show when={typeof newVisualizableItemDegrees().start === "number"}>
-						<ClockHandle
-							value={createMemo(() => ({
-								currentAngle: newVisualizableItemDegrees().start as number,
-								totalAngle: newVisualizableItemDegrees().start ?? 0,
-							}))}
-							clockGraphRadius={RADIUS}
-							onChange={(_, total) => {
-								if (!total) return;
-								if (!newVisualizableItemDegrees().start) return;
-								// if (total < newVisualizableItemDegrees().start ?? 0) return;
-								setNewVisualizableItemDegrees(({ start }) => ({
-									start,
-									end: total,
-								}));
-							}}
-							followMouse={true}
-							variant="minimal"
-							controlled={false}
-						>
+					<ClockHandle
+						value={clockHandleDegrees}
+						onChange={(delta) => {
+							const { totalAngle } = clockHandleDegrees();
+							const newTotalAngle = totalAngle + delta;
+							// Move to the next day
+							if (newTotalAngle > MAX_TOTAL_DEGREES) {
+								handleMoveDateClick(1);
+								return;
+							}
+							// Move to the previous day
+							if (newTotalAngle < 0) {
+								handleMoveDateClick(-1);
+								return;
+							}
+							setClockHandleDegrees(({ currentAngle, totalAngle }) => ({
+								currentAngle: (currentAngle + delta) % 360,
+								totalAngle: totalAngle + delta,
+							}));
+						}}
+						resetValue={(v) => setClockHandleDegrees(v)}
+						clockGraphRadius={RADIUS}
+					>
+						<Show when={typeof newVisualizableItemDegrees().start === "number"}>
+							<ClockHandle
+								value={createMemo(() => ({
+									currentAngle: newVisualizableItemDegrees().start as number,
+									totalAngle: newVisualizableItemDegrees().start ?? 0,
+								}))}
+								clockGraphRadius={RADIUS}
+								onChange={(_, total) => {
+									if (!total) return;
+									if (!newVisualizableItemDegrees().start) return;
+									// if (total < newVisualizableItemDegrees().start ?? 0) return;
+									setNewVisualizableItemDegrees(({ start }) => ({
+										start,
+										end: total,
+									}));
+								}}
+								followMouse={true}
+								variant="minimal"
+								controlled={false}
+							>
+								<Clock ref={canvasRef} />
+							</ClockHandle>
+						</Show>
+						<Show when={typeof newVisualizableItemDegrees().start !== "number"}>
 							<Clock ref={canvasRef} />
-						</ClockHandle>
-					</Show>
-					<Show when={typeof newVisualizableItemDegrees().start !== "number"}>
-						<Clock ref={canvasRef} />
-					</Show>
-				</ClockHandle>
-
+						</Show>
+					</ClockHandle>
+				</VisualizableItemsTooltip>
 				{/* Wheel indicator time of the day	 */}
 				<ColorWheel
 					degrees={
