@@ -4,14 +4,14 @@ import (
 	"context"
 	"fmt"
 
-	"myproject/services"
+	"schejzuren/services"
 
 	"gorm.io/gorm"
 )
 
 // App struct
 type App struct {
-	ctx         context.Context
+	ctx             context.Context
 	ActivityService *services.ActivityService
 }
 

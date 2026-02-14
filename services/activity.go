@@ -13,7 +13,7 @@ type (
 )
 
 const (
-	StatusActivity       Status = "todo"
+	StatusActivity   Status = "todo"
 	StatusInProgress Status = "in_progress"
 	StatusDone       Status = "done"
 

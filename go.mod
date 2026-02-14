@@ -1,4 +1,4 @@
-module myproject
+module schejzuren
 
 go 1.25
 
