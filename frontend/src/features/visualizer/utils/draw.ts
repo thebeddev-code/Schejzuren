@@ -1,9 +1,10 @@
+import { differenceInCalendarDays } from "date-fns";
 import {
 	DAY_PART_HOURS,
 	HOURS_PER_DAY,
 	VISUALIZABLE_ARC_WIDTH,
 } from "./constants.ts";
-import { calcDegreesFrom, calcRadiansFrom } from "./math.ts";
+import { calcDegreesFrom, calcRadiansFrom, clamp } from "./math.ts";
 import type { Drawable, VisualizableItem } from "./types";
 
 interface VisualizableToDrawable {
@@ -42,38 +43,42 @@ export function visualizableToDrawable({
 				const isSpanning = beginHours > endHours;
 
 				// Handle offsetting in case item has ["everyday"] recurrence and is not spanning between days
-				const applyOffset = !isSpanning && v.tags?.includes("everyday");
+				const isRecurrent = !isSpanning && v.tags?.includes("everyday");
 
-				// Rethrow item to the next day when out of the visible time window
-				if (currentlySetHours > endHours + DAY_PART_HOURS && applyOffset) {
-					beginHours += HOURS_PER_DAY;
-					endHours += HOURS_PER_DAY;
+				// Handle recurrent items that do not span between days
+				if (isRecurrent) {
+					// Rethrow item to the next day when out of the visible time window
+					if (currentlySetHours > endHours + DAY_PART_HOURS) {
+						beginHours += HOURS_PER_DAY;
+						endHours += HOURS_PER_DAY;
+					}
+
+					// Rethrow item to the prev day when out of the visible time window
+					if (currentlySetHours + DAY_PART_HOURS < beginHours) {
+						beginHours -= HOURS_PER_DAY;
+						endHours -= HOURS_PER_DAY;
+					}
 				}
 
-				// Rethrow item to the prev day when out of the visible time window
-				if (currentlySetHours + DAY_PART_HOURS < beginHours && applyOffset) {
-					beginHours -= HOURS_PER_DAY;
-					endHours -= HOURS_PER_DAY;
-				}
-
-				// Special case where item spans between days
+				// Handle cases where item spans between days
 				if (isSpanning) {
 					// Rethrow item to next day only if it's outside visible time window
 					const isPatternStart = currentlySetHours < endHours + DAY_PART_HOURS;
 					if (isPatternStart) beginHours -= HOURS_PER_DAY;
 					if (!isPatternStart) endHours += HOURS_PER_DAY;
 				}
-				//
-				// if (!skipOffset) {
-				// 	// Offset start time hours, in case item spans within the next or previous day
-				// 	beginHours +=
-				// 		HOURS_PER_DAY * clamp(differenceInCalendarDays(startsAt, now), -1, 1);
-				//
-				// 	// Offset end time hours, in case item spans within the next or previous day
-				// 	endHours +=
-				// 		HOURS_PER_DAY * clamp(differenceInCalendarDays(endsAt, now), -1, 1);
-				// }
-				//
+
+				// Handle all other cases
+				if (!isRecurrent) {
+					// Offset start time hours, in case item spans within the next or previous day
+					beginHours +=
+						HOURS_PER_DAY *
+						clamp(differenceInCalendarDays(startsAt, now), -1, 1);
+
+					// Offset end time hours, in case item spans within the next or previous day
+					endHours +=
+						HOURS_PER_DAY * clamp(differenceInCalendarDays(endsAt, now), -1, 1);
+				}
 
 				return {
 					...v,
