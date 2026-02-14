@@ -1,49 +1,84 @@
-import { differenceInCalendarDays } from "date-fns";
-import { VISUALIZABLE_ARC_WIDTH } from "./constants.ts";
-import { calcDegreesFrom, calcRadiansFrom, clamp } from "./math.ts";
+import {
+	DAY_PART_HOURS,
+	HOURS_PER_DAY,
+	VISUALIZABLE_ARC_WIDTH,
+} from "./constants.ts";
+import { calcDegreesFrom, calcRadiansFrom } from "./math.ts";
 import type { Drawable, VisualizableItem } from "./types";
+
+interface VisualizableToDrawable {
+	visualizableItems: VisualizableItem[];
+	currentlySetHours: number;
+	now?: Date;
+}
 
 export function visualizableToDrawable({
 	visualizableItems,
 	now = new Date(),
-}: {
-	visualizableItems: VisualizableItem[];
-	now?: Date;
-}): Drawable[] {
+	currentlySetHours,
+}: VisualizableToDrawable): Drawable[] {
 	return (
 		visualizableItems
 
 			// Filter all visualizable items
 			.filter((v) => v.startsAt && v.due)
 			.map((v) => {
-				// Convert strings to dates
+				// Convert strings to actual dates
 				const startsAt = new Date(v.startsAt as string);
 				const endsAt = new Date(v.due as string);
 
-				// Convert start date to hours
-				let startTimeHours =
+				// Convert dates to hours
+				let beginHours =
 					startsAt.getHours() +
 					startsAt.getMinutes() / 60 +
 					startsAt.getSeconds() / 3600;
 
-				// Offset start time hours, in case item spans within the next or previous day
-				startTimeHours +=
-					24 * clamp(differenceInCalendarDays(startsAt, now), -1, 1);
-
-				// Convert end date to hours
-				let endTimeHours =
+				let endHours =
 					endsAt.getHours() +
 					endsAt.getMinutes() / 60 +
 					endsAt.getSeconds() / 3600;
 
-				// Offset end time hours, in case item spans within the next or previous day
-				endTimeHours +=
-					24 * clamp(differenceInCalendarDays(endsAt, now), -1, 1);
+				// Check if item spans between days
+				const isSpanning = beginHours > endHours;
+
+				// Handle offsetting in case item has ["everyday"] recurrence and is not spanning between days
+				const applyOffset = !isSpanning && v.tags?.includes("everyday");
+
+				// Rethrow item to the next day when out of the visible time window
+				if (currentlySetHours > endHours + DAY_PART_HOURS && applyOffset) {
+					beginHours += HOURS_PER_DAY;
+					endHours += HOURS_PER_DAY;
+				}
+
+				// Rethrow item to the prev day when out of the visible time window
+				if (currentlySetHours + DAY_PART_HOURS < beginHours && applyOffset) {
+					beginHours -= HOURS_PER_DAY;
+					endHours -= HOURS_PER_DAY;
+				}
+
+				// Special case where item spans between days
+				if (isSpanning) {
+					// Rethrow item to next day only if it's outside visible time window
+					const isPatternStart = currentlySetHours < endHours + DAY_PART_HOURS;
+					if (isPatternStart) beginHours -= HOURS_PER_DAY;
+					if (!isPatternStart) endHours += HOURS_PER_DAY;
+				}
+				//
+				// if (!skipOffset) {
+				// 	// Offset start time hours, in case item spans within the next or previous day
+				// 	beginHours +=
+				// 		HOURS_PER_DAY * clamp(differenceInCalendarDays(startsAt, now), -1, 1);
+				//
+				// 	// Offset end time hours, in case item spans within the next or previous day
+				// 	endHours +=
+				// 		HOURS_PER_DAY * clamp(differenceInCalendarDays(endsAt, now), -1, 1);
+				// }
+				//
 
 				return {
 					...v,
-					startTimeHours,
-					endTimeHours,
+					startTimeHours: beginHours,
+					endTimeHours: endHours,
 					color: v.color ?? "black",
 				};
 			})
@@ -95,19 +130,23 @@ export function drawDrawableItems({
 		ctx.stroke();
 	};
 
-	for (const { startTimeHours, endTimeHours, color } of drawableItems) {
+	for (const {
+		startTimeHours,
+		endTimeHours: endHours,
+		color,
+	} of drawableItems) {
 		const drawDegreesStart = calcDegreesFrom(
 			Math.max(startTimeHours, viewHours.start),
 			"hours",
 		);
 		const drawDegreesEnd = calcDegreesFrom(
-			Math.min(endTimeHours, viewHours.end),
+			Math.min(endHours, viewHours.end),
 			"hours",
 		);
 
 		const drawRadiansStart = calcRadiansFrom(drawDegreesStart);
 		const drawRadiansEnd = calcRadiansFrom(drawDegreesEnd);
-		if (viewHours.start <= endTimeHours && viewHours.end >= startTimeHours)
+		if (viewHours.start <= endHours && viewHours.end >= startTimeHours)
 			drawItem(
 				drawRadiansStart,
 				drawRadiansEnd,

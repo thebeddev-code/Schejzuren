@@ -74,6 +74,7 @@ export function DayVisualizer({
 			copyVisualizableItems.push(newVisualizableItem() as VisualizableItem);
 		return visualizableToDrawable({
 			visualizableItems: copyVisualizableItems,
+			currentlySetHours: clockHandleDegrees().totalAngle / DEGREES_PER_HOUR,
 		});
 	});
 
