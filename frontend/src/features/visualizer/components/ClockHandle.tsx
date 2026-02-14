@@ -50,7 +50,6 @@ export function ClockHandle({
 		total: value().totalAngle,
 	});
 	const [mouseDown, setMouseDown] = createSignal(followMouse);
-	const [mouseEnter, setMouseEnter] = createSignal(followMouse);
 	const time = createMemo(() => {
 		const t = controlled ? value().totalAngle : handleDegrees().total;
 		return formatDate(
@@ -191,8 +190,6 @@ export function ClockHandle({
 				{/* biome-ignore lint/a11y/useKeyWithClickEvents: This isn't supposed to be interacted with keys */}
 				<div
 					onMouseDown={() => setMouseDown(true)}
-					onMouseEnter={() => setMouseEnter(true)}
-					onMouseLeave={() => setMouseEnter(false)}
 					style={{
 						width: `${HANDLE_BUTTON_SIZE_PX}px`,
 						height: `${HANDLE_BUTTON_SIZE_PX}px`,
