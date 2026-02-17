@@ -3,6 +3,8 @@ package main
 import (
 	"embed"
 
+	"schejzuren/backend"
+
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
@@ -19,7 +21,7 @@ func main() {
 		panic("failed to connect database")
 	}
 	// Create an instance of the app structure
-	app := NewApp(db)
+	app := backend.NewApp(db)
 
 	// Create application with options
 	err := wails.Run(&options.App{
@@ -29,8 +31,8 @@ func main() {
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
-		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
-		OnStartup:        app.startup,
+		BackgroundColour: &options.RGBA{R: 0, G: 0, B: 0, A: 1},
+		OnStartup:        app.Startup,
 		Bind: []interface{}{
 			app,
 			app.ActivityService,
