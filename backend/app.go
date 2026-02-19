@@ -1,3 +1,5 @@
+// Package backend provides core application services including
+// database connections and business logic operations.
 package backend
 
 import (
@@ -20,7 +22,9 @@ func NewApp(db *gorm.DB) *App {
 	return &App{
 		ActivityService: services.NewActivityService(db),
 	}
-} // startup is called when the app starts. The context is saved
+}
+
+// Startup is called when the app starts. The context is saved
 // so we can call the runtime methods
 func (a *App) Startup(ctx context.Context) {
 	a.ctx = ctx
