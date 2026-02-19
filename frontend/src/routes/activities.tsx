@@ -12,7 +12,22 @@ import { DayVisualizer } from "~/features/visualizer/components/DayVisualizer";
 import type { VisualizableItem } from "~/features/visualizer/utils/types";
 
 export default function Dashboard() {
-	const activitiesQueryResult = createAsync(() => getActivities());
+	const activitiesQueryResult = createAsync(() =>
+		getActivities({
+			where: {
+				recurrenceRule: {
+					contains: "everyday",
+				},
+				OR: [
+					{
+						recurrenceRule: {
+							contains: "thur",
+						},
+					},
+				],
+			},
+		}),
+	);
 	const [currentDate, setCurrentDate] = createSignal(new Date());
 	const activities = createMemo(() => activitiesQueryResult() ?? []);
 

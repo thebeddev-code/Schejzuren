@@ -1,4 +1,6 @@
+import type { DeepOmit } from "ts-essentials";
 import z from "zod";
+import type { query } from "~/go/models";
 import {
 	CreateActivity,
 	DeleteActivity,
@@ -18,8 +20,15 @@ export async function createActivity({ body }: { body: Activity }) {
 	}
 }
 
-export async function getActivities() {
-	return GetActivities();
+export async function getActivities(
+	q?: DeepOmit<
+		query.ItemQuery,
+		{
+			convertValues: true;
+		}
+	>,
+) {
+	return GetActivities(q as query.ItemQuery);
 }
 
 export async function updateActivity({

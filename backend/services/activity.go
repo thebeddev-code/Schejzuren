@@ -1,8 +1,8 @@
+// Package services provides core business logic
 package services
 
 import (
-	"strings"
-	"time"
+	"schejzuren/backend/query"
 
 	"gorm.io/gorm"
 )
@@ -48,11 +48,10 @@ func NewActivityService(db *gorm.DB) *ActivityService {
 	return &ActivityService{db: db}
 }
 
-func (s *ActivityService) GetActivities() ([]Activity, error) {
+func (s *ActivityService) GetActivities(q *query.ItemQuery) ([]Activity, error) {
+	db := query.ApplyItemQuery(q)(s.db)
 	var activities []Activity
-	weekday := time.Now().Weekday().String()
-	lowercaseWeekday := strings.ToLower(weekday)
-	result := s.db.Where("recurrence_rule LIKE ?", "%everyday%").Or("recurrence_rule LIKE ?", "%"+lowercaseWeekday+"%").Find(&activities)
+	result := db.Find(&activities)
 	return activities, result.Error
 }
 
