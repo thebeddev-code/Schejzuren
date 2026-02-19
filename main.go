@@ -10,14 +10,17 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 //go:embed all:frontend/dist
 var assets embed.FS
 
 func main() {
-	db, db_err := gorm.Open(sqlite.Open("app.db"), &gorm.Config{})
-	if db_err != nil {
+	db, dbErr := gorm.Open(sqlite.Open("app.db"), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
+	if dbErr != nil {
 		panic("failed to connect database")
 	}
 	// Create an instance of the app structure
