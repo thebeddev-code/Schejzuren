@@ -11,7 +11,7 @@ import {
 import { DayVisualizer } from "~/features/visualizer/components/DayVisualizer";
 import type { VisualizableItem } from "~/features/visualizer/utils/types";
 
-export default function Dashboard() {
+export default function ActivitiesToday() {
 	const activitiesQueryResult = createAsync(() =>
 		getActivities({
 			where: {

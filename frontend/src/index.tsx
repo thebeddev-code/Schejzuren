@@ -4,7 +4,7 @@ import { Route, Router } from "@solidjs/router";
 import { render } from "solid-js/web";
 import "./index.css";
 import { applyTheme } from "./lib/utils/theme.ts";
-import Activities from "./routes/activities.tsx";
+import Activities from "./routes/dashboard/activities/activities.tsx";
 import DashboardLayout from "./routes/layout.tsx";
 import Settings from "./routes/settings.tsx";
 
