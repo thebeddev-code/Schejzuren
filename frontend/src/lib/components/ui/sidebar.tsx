@@ -8,7 +8,6 @@ import {
 } from "lucide-solid";
 import { createSignal } from "solid-js";
 import { cn } from "~/lib/utils/cn";
-
 export function Sidebar() {
 	const [collapsed, setCollapsed] = createSignal(false);
 	const toggleSidebar = () => setCollapsed((b) => !b);
@@ -34,7 +33,7 @@ export function Sidebar() {
 			{/* Links - Top */}
 			<nav class="flex-1 px-2 py-4 space-y-2">
 				<A
-					href="/"
+					href="activities/today"
 					class="flex items-center justify-center gap-2 p-3 text-sm text-foreground hover:bg-(--accent-hover) hover:text-background rounded-lg transition group"
 				>
 					<ListTodo size={20} />
@@ -42,7 +41,7 @@ export function Sidebar() {
 				</A>
 
 				<A
-					href="/calendar"
+					href="activities/calendar"
 					class="flex items-center justify-center gap-2 p-3 text-sm text-foreground hover:bg-(--accent-hover) hover:text-background rounded-lg transition group"
 				>
 					<CalendarIcon size={20} />
@@ -52,13 +51,13 @@ export function Sidebar() {
 
 			{/* Links - Bottom */}
 			<div class="px-2 pb-4">
-				<a
-					href="/settings"
+				<A
+					href="settings"
 					class="flex items-center justify-center gap-2 p-3 text-sm text-foreground hover:bg-(--accent-hover) hover:text-background rounded-lg transition group"
 				>
 					<SettingsIcon size={20} />
 					{!collapsed() && <span>Settings</span>}
-				</a>
+				</A>
 			</div>
 		</aside>
 	);
