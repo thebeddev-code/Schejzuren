@@ -1,13 +1,8 @@
 import { Toast } from "@kobalte/core/toast";
-import { useNavigate } from "@solidjs/router";
 import type { ParentProps } from "solid-js";
 import { Sidebar } from "~/lib/components/ui/sidebar";
 
 export default function Layout(props: ParentProps) {
-	const navigate = useNavigate();
-	navigate("/dashboard/activities/today", {
-		replace: true,
-	});
 	return (
 		<div class="relative bg-background flex flex-row">
 			<Toast.Region
