@@ -1,4 +1,4 @@
-import type { DeepOmit } from "ts-essentials";
+import type { DeepPartial } from "ts-essentials";
 import z from "zod";
 import type { query } from "~/go/models";
 import {
@@ -20,14 +20,7 @@ export async function createActivity({ body }: { body: Activity }) {
 	}
 }
 
-export async function getActivities(
-	q?: DeepOmit<
-		query.ItemQuery,
-		{
-			convertValues: true;
-		}
-	>,
-) {
+export async function getActivities(q?: DeepPartial<query.ItemQuery>) {
 	return GetActivities(q as query.ItemQuery);
 }
 
