@@ -3,6 +3,7 @@ import {
 	CalendarIcon,
 	ChevronLeftIcon,
 	ChevronRightIcon,
+	Inbox,
 	ListTodo,
 	SettingsIcon,
 } from "lucide-solid";
@@ -34,15 +35,23 @@ export function Sidebar() {
 			<nav class="flex-1 px-2 py-4 space-y-2">
 				<A
 					href="activities/today"
-					class="flex items-center justify-center gap-2 p-3 text-sm text-foreground hover:bg-(--accent-hover) hover:text-background rounded-lg transition group"
+					class="flex items-center justify-start gap-2 p-3 text-sm text-foreground hover:bg-(--accent-hover) hover:text-background rounded-lg transition group"
+				>
+					<Inbox size={20} />
+					{!collapsed() && <span>Today</span>}
+				</A>
+
+				<A
+					href="activities"
+					class="flex items-center justify-start gap-2 p-3 text-sm text-foreground hover:bg-(--accent-hover) hover:text-background rounded-lg transition group"
 				>
 					<ListTodo size={20} />
-					{!collapsed() && <span>Activities</span>}
+					{!collapsed() && <span>All</span>}
 				</A>
 
 				<A
 					href="activities/calendar"
-					class="flex items-center justify-center gap-2 p-3 text-sm text-foreground hover:bg-(--accent-hover) hover:text-background rounded-lg transition group"
+					class="flex items-center justify-start gap-2 p-3 text-sm text-foreground hover:bg-(--accent-hover) hover:text-background rounded-lg transition group"
 				>
 					<CalendarIcon size={20} />
 					{!collapsed() && <span>Calendar</span>}
