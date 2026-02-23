@@ -1,5 +1,6 @@
 import { Toast } from "@kobalte/core/toast";
 import type { ParentProps } from "solid-js";
+import { ActivityFormDrawer } from "~/features/activities/components/ActivityFormDrawer";
 import { Sidebar } from "~/lib/components/ui/sidebar";
 
 export default function Layout(props: ParentProps) {
@@ -13,6 +14,7 @@ export default function Layout(props: ParentProps) {
 			</Toast.Region>
 			<Sidebar />
 			{props.children}
+			<ActivityFormDrawer />
 		</div>
 	);
 }

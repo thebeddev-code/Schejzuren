@@ -3,7 +3,7 @@ import { addDays, set } from "date-fns";
 import { createMemo, createSignal, Show } from "solid-js";
 import { getActivities } from "~/features/activities/api/getActivities";
 import { ActivitiesList } from "~/features/activities/components/ActivitiesList";
-import { ActivityFormDrawer } from "~/features/activities/components/ActivityFormDrawer";
+
 import {
 	activityFormStore,
 	openActivityForm,
@@ -68,7 +68,6 @@ export default function ActivitiesToday() {
 				</Show>
 				{/* )} */}
 				{/* {status === "success" && activities && <ActivityList activities={activities} />} */}
-				<ActivityFormDrawer />
 			</main>
 		</main>
 	);
