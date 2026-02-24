@@ -192,7 +192,7 @@ export function ActivityForm() {
 			class="flex flex-col gap-6 bg-background p-8 mx-auto"
 		>
 			<header>
-				<h2 class="text-xl font-bold text-foreground">Create New Task</h2>
+				<h2 class="text-xl font-bold text-foreground">Create New Activity</h2>
 				<p class="text-sm text-foreground/80">
 					Fill out the details below to organize your activity.
 				</p>
