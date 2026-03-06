@@ -2,7 +2,10 @@
 package services
 
 import (
-	"schejzuren/backend/query"
+	"context"
+	"sync"
+
+	"schejzuren/backend/utils"
 
 	"gorm.io/gorm"
 )
@@ -22,7 +25,7 @@ const (
 	PriorityHigh   Priority = "high"
 )
 
-type Activity struct {
+type ActivityItem struct {
 	ID             int      `json:"id" gorm:"primaryKey"`
 	Title          string   `json:"title"`
 	Description    *string  `json:"description"`
@@ -39,34 +42,49 @@ type Activity struct {
 	RecurrenceRule *string  `json:"recurrenceRule"`
 }
 
-type ActivityService struct {
-	db *gorm.DB
+type activityService struct {
+	db  *gorm.DB
+	ctx *context.Context
 }
 
-func NewActivityService(db *gorm.DB) *ActivityService {
-	db.AutoMigrate(&Activity{})
-	return &ActivityService{db: db}
+var (
+	activityServiceInstance *activityService
+	onceActivityService     sync.Once
+)
+
+func NewActivityService(db *gorm.DB) *activityService {
+	if activityServiceInstance == nil {
+		onceActivityService.Do(func() {
+			db.AutoMigrate(&ActivityItem{})
+			activityServiceInstance = &activityService{db: db}
+		})
+	}
+	return activityServiceInstance
 }
 
-func (s *ActivityService) GetActivities(q *query.ItemQuery) ([]Activity, error) {
-	db := query.ApplyItemQuery(q)(s.db)
-	var activities []Activity
+func (s *activityService) Start(ctx context.Context) {
+	s.ctx = &ctx
+}
+
+func (s *activityService) GetActivities(q *utils.ItemQuery) ([]ActivityItem, error) {
+	db := utils.ApplyItemQuery(q)(s.db)
+	var activities []ActivityItem
 	result := db.Find(&activities)
 	return activities, result.Error
 }
 
-func (s *ActivityService) CreateActivity(activity Activity) error {
+func (s *activityService) CreateActivity(activity ActivityItem) error {
 	return s.db.Create(&activity).Error
 }
 
-func (s *ActivityService) UpdateActivity(id int, updated Activity) error {
-	var activity Activity
+func (s *activityService) UpdateActivity(id int, updated ActivityItem) error {
+	var activity ActivityItem
 	if err := s.db.First(&activity, id).Error; err != nil {
 		return err
 	}
 	return s.db.Model(&activity).Updates(updated).Error
 }
 
-func (s *ActivityService) DeleteActivity(id int) error {
-	return s.db.Delete(&Activity{}, id).Error
+func (s *activityService) DeleteActivity(id int) error {
+	return s.db.Delete(&ActivityItem{}, id).Error
 }

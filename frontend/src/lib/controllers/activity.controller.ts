@@ -1,14 +1,13 @@
 import type { DeepPartial } from "ts-essentials";
 import z from "zod";
-import type { query } from "~/go/models";
 import {
 	CreateActivity,
 	DeleteActivity,
 	GetActivities,
 	UpdateActivity,
-} from "~/go/services/ActivityService";
+} from "~/go/services/activityService";
 import { activityPayloadSchema } from "../schemas/activity.schema";
-import type { Activity } from "../types/index";
+import type { Activity, ActivityQuery } from "../types/index";
 
 export async function createActivity({ body }: { body: Activity }) {
 	try {
@@ -20,8 +19,8 @@ export async function createActivity({ body }: { body: Activity }) {
 	}
 }
 
-export async function getActivities(q?: DeepPartial<query.ItemQuery>) {
-	return GetActivities(q as query.ItemQuery);
+export async function getActivities(q?: DeepPartial<ActivityQuery>) {
+	return GetActivities(q as ActivityQuery);
 }
 
 export async function updateActivity({

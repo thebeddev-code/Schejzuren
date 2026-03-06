@@ -1,9 +1,10 @@
 package main
 
 import (
+	"context"
 	"embed"
 
-	"schejzuren/backend"
+	"schejzuren/backend/services"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -23,8 +24,9 @@ func main() {
 	if dbErr != nil {
 		panic("failed to connect database")
 	}
-	// Create an instance of the app structure
-	app := backend.NewApp(db)
+
+	// Create services
+	activityService := services.NewActivityService(db)
 
 	// Create application with options
 	err := wails.Run(&options.App{
@@ -35,10 +37,11 @@ func main() {
 			Assets: assets,
 		},
 		BackgroundColour: &options.RGBA{R: 0, G: 0, B: 0, A: 1},
-		OnStartup:        app.Startup,
+		OnStartup: func(ctx context.Context) {
+			activityService.Start(ctx)
+		},
 		Bind: []interface{}{
-			app,
-			app.ActivityService,
+			activityService,
 		},
 	})
 	if err != nil {

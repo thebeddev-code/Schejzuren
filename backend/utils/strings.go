@@ -1,4 +1,4 @@
-// Package utils provides common utils for dealiting with strings, numbers etc.
+// Package utils provides common utils for dealing with strings, db query
 package utils
 
 import (

@@ -1,11 +1,8 @@
-// Package query provides utils to construct complex database queries
-package query
+package utils
 
 import (
 	"fmt"
 	"reflect"
-
-	"schejzuren/backend/utils"
 
 	"gorm.io/gorm"
 )
@@ -156,7 +153,7 @@ func applyFilter[T any](db *gorm.DB, filters *T, queryType QueryType) *gorm.DB {
 			continue
 		}
 
-		db = applyCondition(db, utils.ToSnakeCase(fieldName), field.Interface(), queryType)
+		db = applyCondition(db, ToSnakeCase(fieldName), field.Interface(), queryType)
 	}
 
 	return db

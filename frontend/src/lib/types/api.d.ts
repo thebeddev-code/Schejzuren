@@ -1,6 +1,7 @@
-import { services } from "~/go/models";
+import { utils } from "~/go/models";
 
 export type Activity = services.Activity;
+export type ActivityQuery = DeepPartial<utils.ItemQuery>;
 
 // export type Activity = {
 //   id: number,
