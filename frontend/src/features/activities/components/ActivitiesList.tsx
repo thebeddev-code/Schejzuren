@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { Plus } from "lucide-solid";
 import { type Accessor, For } from "solid-js";
 import { Button } from "~/lib/components/ui/button";
@@ -5,13 +6,15 @@ import type { Activity } from "~/lib/types";
 import { ActivityItem } from "./ActivityItem";
 import { openActivityForm } from "./activityFormStore";
 
-export function ActivitiesList({
-	activities,
-}: {
+interface Props {
+	className?: string;
 	activities: Accessor<Activity[]>;
-}) {
+}
+export function ActivitiesList({ className, activities }: Props) {
 	return (
-		<section class="h-dvh w-full overflow-y-auto bg-background p-4 border-l border-border">
+		<section
+			class={clsx("h-dvh w-full overflow-y-auto bg-background p-4", className)}
+		>
 			<div class="flex justify-center mb-4">
 				<Button
 					variant="secondary"

@@ -33,7 +33,7 @@ export default function ActivitiesToday() {
 
 	return (
 		<main class="w-full">
-			<main class="flex-1 h-dvh grid grid-cols-2">
+			<main class="flex-1 h-dvh grid grid-cols-2 ">
 				{/* {status === "success" && activities && ( */}
 				<Show when={activitiesQueryResult()}>
 					<DayVisualizer
@@ -64,7 +64,10 @@ export default function ActivitiesToday() {
 							openActivityForm("create", activity);
 						}}
 					/>
-					<ActivitiesList activities={activities} />
+					<ActivitiesList
+						activities={activities}
+						class="border-l border-border"
+					/>
 				</Show>
 				{/* )} */}
 				{/* {status === "success" && activities && <ActivityList activities={activities} />} */}
